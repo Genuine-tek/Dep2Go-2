@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/industry-59039069-c911-42d7-9235-c9e8332e3de3/styles.css">
+<script src="_ds/industry-59039069-c911-42d7-9235-c9e8332e3de3/_ds_bundle.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="dep.css">
+</helmet>
+<aside aria-label="Contact and part request" style="font-family:var(--font-body);display:flex;flex-direction:column;gap:26px">
+
+  <section class="blueprint" style="background:#fff">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+    <h2 style="margin:0;background:#0E5C88;color:#fff;padding:10px 14px;font-size:17px;letter-spacing:.12em;text-transform:uppercase">Call Us Now</h2>
+    <div style="padding:18px 14px;text-align:center">
+      <a href="tel:+19082007199" style="display:block;font-family:var(--dep-mono);font-weight:600;font-size:clamp(21px,2.6vw,25px);letter-spacing:-.02em;color:#0E5C88;text-decoration:none" style-hover="color:#08243A">(908) 200-7199</a>
+      <p style="margin:9px 0 0;font-size:14px;color:#33424D;line-height:1.45">A parts specialist is waiting to help — no phone tree, no chatbot.</p>
+    </div>
+  </section>
+
+  <sc-if value="{{ showForm }}" hint-placeholder-val="{{ true }}">
+  <section id="sidebar-request" style="position:relative">
+    <div style="height:22px;background:#0E5C88;-webkit-mask-image:radial-gradient(circle 10px at 16px 0,transparent 98%,#000 100%);-webkit-mask-size:32px 22px;-webkit-mask-repeat:repeat-x;mask-image:radial-gradient(circle 10px at 16px 0,transparent 98%,#000 100%);mask-size:32px 22px;mask-repeat:repeat-x"></div>
+    <div style="border:1px solid #C9D4DC;border-top:0;background:#fff">
+      <div style="background:#0E5C88;color:#fff;padding:0 14px 11px;display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+        <h2 style="margin:0;font-size:17px;letter-spacing:.12em;text-transform:uppercase">Request a Part</h2>
+        <span style="font-family:var(--dep-mono);font-size:10px;letter-spacing:.06em;color:#9FD4F0">No. {{ ticket }}</span>
+      </div>
+      <p style="margin:0;padding:11px 14px;font-size:13.5px;line-height:1.45;color:#33424D;background:#EEF2F5;border-bottom:1px solid #C9D4DC">The more numbers you give us, the faster we find it.</p>
+
+      <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+        <div role="status" style="padding:24px 16px;text-align:center">
+          <div style="display:inline-grid;place-items:center;width:44px;height:44px;border:2px solid #0E5C88;color:#0E5C88;margin-bottom:12px">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+          </div>
+          <p style="margin:0 0 6px;font-family:var(--font-heading);font-weight:600;font-size:21px;text-transform:uppercase;color:#08243A">Request logged</p>
+          <p style="margin:0 0 12px;font-family:var(--dep-mono);font-size:12px;color:#0E5C88">TICKET {{ ticket }}</p>
+          <p style="margin:0;font-size:14px;color:#33424D;line-height:1.5">A parts specialist will come back to you with availability and pricing. Need it today? Call <a href="tel:+19082007199" style="font-family:var(--dep-mono);white-space:nowrap">(908) 200-7199</a>.</p>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+        <form novalidate="" onSubmit="{{ onSubmit }}">
+          <div style="border-bottom:1px solid #E3E9ED;padding:7px 14px">
+            <label for="sb-name" style="display:block;font-family:var(--dep-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#2E3D48">Name <span style="color:#9A6A05">*required</span></label>
+            <input id="sb-name" name="name" type="text" autocomplete="name" style="width:100%;border:0;padding:3px 0;background:transparent;font-family:var(--dep-mono);font-size:13.5px;color:#14181C" style-focus="background:#E8F6FD">
+          </div>
+          <div style="border-bottom:1px solid #E3E9ED;padding:7px 14px">
+            <label for="sb-company" style="display:block;font-family:var(--dep-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#2E3D48">Company</label>
+            <input id="sb-company" name="company" type="text" autocomplete="organization" style="width:100%;border:0;padding:3px 0;background:transparent;font-family:var(--dep-mono);font-size:13.5px;color:#14181C" style-focus="background:#E8F6FD">
+          </div>
+          <div style="border-bottom:1px solid #E3E9ED;padding:7px 14px">
+            <label for="sb-email" style="display:block;font-family:var(--dep-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#2E3D48">Email <span style="color:#9A6A05">*required</span></label>
+            <input id="sb-email" name="email" type="email" autocomplete="email" style="width:100%;border:0;padding:3px 0;background:transparent;font-family:var(--dep-mono);font-size:13.5px;color:#14181C" style-focus="background:#E8F6FD">
+          </div>
+          <div style="border-bottom:1px solid #E3E9ED;padding:7px 14px">
+            <label for="sb-phone" style="display:block;font-family:var(--dep-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#2E3D48">Phone</label>
+            <input id="sb-phone" name="phone" type="tel" autocomplete="tel" placeholder="(   )    -" style="width:100%;border:0;padding:3px 0;background:transparent;font-family:var(--dep-mono);font-size:13.5px;color:#14181C" style-focus="background:#E8F6FD">
+          </div>
+          <div style="border-bottom:1px solid #E3E9ED;padding:7px 14px">
+            <label for="sb-statezip" style="display:block;font-family:var(--dep-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#2E3D48">State / Zip Code</label>
+            <input id="sb-statezip" name="statezip" type="text" placeholder="NJ 08809" style="width:100%;border:0;padding:3px 0;background:transparent;font-family:var(--dep-mono);font-size:13.5px;color:#14181C" style-focus="background:#E8F6FD">
+          </div>
+          <div style="background:#08243A;color:#9FD4F0;padding:6px 14px;font-family:var(--dep-mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase">Machine &amp; engine numbers</div>
+          <div style="border-bottom:1px solid #E3E9ED;padding:7px 14px">
+            <label for="sb-make" style="display:block;font-family:var(--dep-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#2E3D48">Machine Make</label>
+            <input id="sb-make" name="make" type="text" placeholder="John Deere" style="width:100%;border:0;padding:3px 0;background:transparent;font-family:var(--dep-mono);font-size:13.5px;color:#14181C" style-focus="background:#E8F6FD">
+          </div>
+          <div style="border-bottom:1px solid #E3E9ED;padding:7px 14px">
+            <label for="sb-year" style="display:block;font-family:var(--dep-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#2E3D48">Machine Year</label>
+            <input id="sb-year" name="year" type="text" inputmode="numeric" placeholder="1998" style="width:100%;border:0;padding:3px 0;background:transparent;font-family:var(--dep-mono);font-size:13.5px;color:#14181C" style-focus="background:#E8F6FD">
+          </div>
+          <div style="border-bottom:1px solid #E3E9ED;padding:7px 14px">
+            <label for="sb-serial" style="display:block;font-family:var(--dep-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#2E3D48">Machine Serial Number / ID</label>
+            <input id="sb-serial" name="serial" type="text" placeholder="T0310GX123456" style="width:100%;border:0;padding:3px 0;background:transparent;font-family:var(--dep-mono);font-size:13.5px;color:#14181C" style-focus="background:#E8F6FD">
+          </div>
+          <div style="border-bottom:1px solid #E3E9ED;padding:7px 14px">
+            <label for="sb-engmodel" style="display:block;font-family:var(--dep-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#2E3D48">Engine Model No.</label>
+            <input id="sb-engmodel" name="enginemodel" type="text" placeholder="4045TF270" style="width:100%;border:0;padding:3px 0;background:transparent;font-family:var(--dep-mono);font-size:13.5px;color:#14181C" style-focus="background:#E8F6FD">
+          </div>
+          <div style="border-bottom:1px solid #E3E9ED;padding:7px 14px">
+            <label for="sb-engserial" style="display:block;font-family:var(--dep-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#2E3D48">Engine Serial No.</label>
+            <input id="sb-engserial" name="engineserial" type="text" style="width:100%;border:0;padding:3px 0;background:transparent;font-family:var(--dep-mono);font-size:13.5px;color:#14181C" style-focus="background:#E8F6FD">
+          </div>
+          <div style="border-bottom:1px solid #E3E9ED;padding:7px 14px">
+            <label for="sb-arcpl" style="display:block;font-family:var(--dep-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#2E3D48">Engine AR / CPL No.</label>
+            <input id="sb-arcpl" name="arcpl" type="text" placeholder="CPL 1234 / AR-56789" style="width:100%;border:0;padding:3px 0;background:transparent;font-family:var(--dep-mono);font-size:13.5px;color:#14181C" style-focus="background:#E8F6FD">
+          </div>
+          <div style="border-bottom:1px solid #C9D4DC;padding:7px 14px">
+            <label for="sb-notes" style="display:block;font-family:var(--dep-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#2E3D48">Part Description / Notes</label>
+            <textarea id="sb-notes" name="notes" rows="3" placeholder="What broke, what you need, how soon." style="width:100%;border:0;padding:3px 0;background:transparent;font-family:var(--dep-mono);font-size:13.5px;color:#14181C;resize:vertical" style-focus="background:#E8F6FD"></textarea>
+          </div>
+
+          <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}">
+            <p role="alert" style="margin:0;padding:9px 14px;background:#FDF3E0;border-bottom:1px solid #C9D4DC;font-size:13px;color:#7A4E00">{{ error }}</p>
+          </sc-if>
+
+          <div style="padding:14px">
+            <button type="submit" style="width:100%;background:#F2A81D;color:#08243A;border:1px solid #D8930C;padding:13px 10px;font-family:var(--font-heading);font-weight:600;font-size:18px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer" style-hover="background:#08243A;color:#F2A81D;border-color:#08243A">Send Part Request</button>
+            <p style="margin:11px 0 0;font-size:13px;line-height:1.45;color:#33424D">Need it today? Call <a href="tel:+19082007199" style="font-family:var(--dep-mono);font-weight:600;white-space:nowrap">(908) 200-7199</a> — same-day and next-day delivery available.</p>
+          </div>
+        </form>
+      </sc-if>
+    </div>
+  </section>
+  </sc-if>
+
+  <section class="blueprint" style="background:#fff">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+    <h2 style="margin:0;background:#0E5C88;color:#fff;padding:10px 14px;font-size:17px;letter-spacing:.12em;text-transform:uppercase">Parts We Source</h2>
+    <ul style="list-style:none;margin:0;padding:6px 0;display:flex;flex-direction:column">
+      <li><a href="Services.dc.html#new-parts" style="display:flex;align-items:center;gap:11px;padding:9px 14px;color:#14181C;text-decoration:none;font-size:14.5px;border-left:3px solid transparent" style-hover="background:#EEF2F5;border-left-color:#00AEF0;color:#0E5C88">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0E5C88" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"></path></svg>
+        Engines &amp; Engine Parts</a></li>
+      <li><a href="Services.dc.html#new-parts" style="display:flex;align-items:center;gap:11px;padding:9px 14px;color:#14181C;text-decoration:none;font-size:14.5px;border-left:3px solid transparent" style-hover="background:#EEF2F5;border-left-color:#00AEF0;color:#0E5C88">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0E5C88" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.7 6.5 8.2a7.8 7.8 0 1 0 11 0z"></path></svg>
+        Hydraulics &amp; Cylinders</a></li>
+      <li><a href="Services.dc.html#used-parts" style="display:flex;align-items:center;gap:11px;padding:9px 14px;color:#14181C;text-decoration:none;font-size:14.5px;border-left:3px solid transparent" style-hover="background:#EEF2F5;border-left-color:#00AEF0;color:#0E5C88">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0E5C88" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="15" r="3"></circle><circle cx="17" cy="15" r="3"></circle><path d="M7 12h10M4 15H2M22 15h-2"></path></svg>
+        Undercarriage &amp; Tracks</a></li>
+      <li><a href="Services.dc.html#equipment-sales" style="display:flex;align-items:center;gap:11px;padding:9px 14px;color:#14181C;text-decoration:none;font-size:14.5px;border-left:3px solid transparent" style-hover="background:#EEF2F5;border-left-color:#00AEF0;color:#0E5C88">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0E5C88" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h16l-2.4 10H6.4z"></path><path d="M8 8V4.5h8V8"></path></svg>
+        Buckets &amp; Attachments</a></li>
+      <li><a href="Services.dc.html#used-parts" style="display:flex;align-items:center;gap:11px;padding:9px 14px;color:#14181C;text-decoration:none;font-size:14.5px;border-left:3px solid transparent" style-hover="background:#EEF2F5;border-left-color:#00AEF0;color:#0E5C88">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0E5C88" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+        Final Drives</a></li>
+      <li><a href="Services.dc.html#hard-to-find" style="display:flex;align-items:center;gap:11px;padding:9px 14px;color:#14181C;text-decoration:none;font-size:14.5px;border-left:3px solid transparent" style-hover="background:#EEF2F5;border-left-color:#00AEF0;color:#0E5C88">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0E5C88" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 12h10"></path><circle cx="4.5" cy="12" r="2.5"></circle><circle cx="19.5" cy="12" r="2.5"></circle></svg>
+        PTO &amp; Drivetrain</a></li>
+      <li><a href="Services.dc.html#hard-to-find" style="display:flex;align-items:center;gap:11px;padding:9px 14px;color:#14181C;text-decoration:none;font-size:14.5px;border-left:3px solid transparent" style-hover="background:#EEF2F5;border-left-color:#00AEF0;color:#0E5C88">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0E5C88" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5 19.5 7v10L12 21.5 4.5 17V7z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        Hardware &amp; Fasteners</a></li>
+      <li><a href="Services.dc.html#custom-builds" style="display:flex;align-items:center;gap:11px;padding:9px 14px;color:#14181C;text-decoration:none;font-size:14.5px;border-left:3px solid transparent" style-hover="background:#EEF2F5;border-left-color:#00AEF0;color:#0E5C88">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0E5C88" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 1-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 0 1 5.4-5.4z"></path></svg>
+        Custom &amp; Legacy Builds</a></li>
+    </ul>
+    <p style="margin:0;padding:11px 14px;border-top:1px solid #DFE6EB;font-size:13.5px"><a href="Services.dc.html" style="font-style:italic">View all sourcing services →</a></p>
+  </section>
+</aside>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:300,&quot;height&quot;:1200},&quot;ticket&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;DEP-24-0418&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { sent: false, error: '' };
+  renderVals() {
+    return {
+      ticket: this.props.ticket || 'DEP-24-0418',
+      showForm: this.props.showForm !== false,
+      sent: this.state.sent,
+      notSent: !this.state.sent,
+      error: this.state.error,
+      onSubmit: (e) => {
+        e.preventDefault();
+        const f = new FormData(e.currentTarget);
+        const name = String(f.get('name') || '').trim();
+        const email = String(f.get('email') || '').trim();
+        if (!name) return this.setState({ error: 'Add your name so we know who to call back.' });
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return this.setState({ error: 'Add a valid email address for the quote.' });
+        this.setState({ sent: true, error: '' });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

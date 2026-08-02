@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/industry-59039069-c911-42d7-9235-c9e8332e3de3/styles.css">
+<script src="_ds/industry-59039069-c911-42d7-9235-c9e8332e3de3/_ds_bundle.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="dep.css">
+</helmet>
+<footer style="font-family:var(--font-body);margin-top:64px">
+  <div style="background:#0E5C88;color:#fff">
+    <div style="max-width:1280px;margin:0 auto;padding:22px 20px;display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap">
+      <div>
+        <span style="display:block;font-family:var(--font-heading);font-weight:600;font-size:clamp(20px,2.4vw,24px);line-height:1.1;text-transform:uppercase">Parts intel, no sales pitch</span>
+        <span style="display:block;font-size:14px;color:#C7E4F5">Sourcing guides and downtime tips for heavy equipment owners. A few emails a year.</span>
+      </div>
+      <form onSubmit="{{ onSubscribe }}" style="display:flex;align-items:center;gap:0;flex-wrap:wrap">
+        <label for="dep-newsletter" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Your email address</label>
+        <input id="dep-newsletter" name="email" type="email" required="" placeholder="your@email.com" style="width:280px;max-width:60vw;height:44px;padding:0 13px;border:1px solid #08243A;border-right:0;background:#fff;color:#14181C;font-family:var(--dep-mono);font-size:14px">
+        <button type="submit" style="height:44px;padding:0 22px;border:1px solid #00AEF0;background:#00AEF0;color:#08243A;font-family:var(--font-heading);font-weight:600;font-size:15px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer" style-hover="background:#fff;border-color:#fff">Subscribe</button>
+        <sc-if value="{{ subscribed }}" hint-placeholder-val="{{ false }}">
+          <span role="status" style="display:block;width:100%;margin-top:8px;font-family:var(--dep-mono);font-size:12px;color:#08243A;background:#00AEF0;padding:4px 9px">✓ You're on the list.</span>
+        </sc-if>
+      </form>
+    </div>
+  </div>
+
+  <div style="background:#08243A;color:#C9D9E4">
+    <div style="max-width:1280px;margin:0 auto;padding:40px 20px 0">
+      <a href="Home.dc.html" style="display:inline-block;line-height:0"><img src="dep-logo-mark.png" alt="Direct Equipment Parts logo" style="display:block;height:130px;width:auto"></a>
+    </div>
+    <div style="max-width:1280px;margin:0 auto;padding:30px 20px 34px;display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));gap:34px">
+      <div>
+        <h2 style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#fff;margin:0 0 4px">Services</h2>
+        <div style="height:2px;background:#00AEF0;width:26px;margin-bottom:13px"></div>
+        <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;font-size:14px">
+          <li><a href="Services.dc.html#hard-to-find" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Hard-to-Find &amp; Obsolete Sourcing</a></li>
+          <li><a href="Services.dc.html#new-parts" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">New Parts &amp; Equipment</a></li>
+          <li><a href="Services.dc.html#used-parts" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Used &amp; Refurbished Parts</a></li>
+          <li><a href="Services.dc.html#custom-builds" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Custom Builds &amp; Legacy Solutions</a></li>
+          <li><a href="Services.dc.html#delivery" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Parts Pickup &amp; Delivery</a></li>
+          <li><a href="Services.dc.html#consultation" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Service Repair Consultation</a></li>
+          <li><a href="Services.dc.html#financing" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Financing &amp; Flexible Payment</a></li>
+          <li><a href="Services.dc.html#equipment-sales" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Equipment Sales</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#fff;margin:0 0 4px">Parts We Source</h2>
+        <div style="height:2px;background:#00AEF0;width:26px;margin-bottom:13px"></div>
+        <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;font-size:14px">
+          <li><a href="Home.dc.html#by-component" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Engines &amp; Engine Parts</a></li>
+          <li><a href="Home.dc.html#by-component" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Hydraulics</a></li>
+          <li><a href="Home.dc.html#by-component" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Undercarriage</a></li>
+          <li><a href="Home.dc.html#by-component" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Buckets &amp; Attachments</a></li>
+          <li><a href="Home.dc.html#by-component" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Final Drives</a></li>
+          <li><a href="Home.dc.html#by-component" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">PTO &amp; Drivetrain</a></li>
+          <li><a href="Home.dc.html#by-component" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Hardware &amp; Fasteners</a></li>
+          <li><a href="Home.dc.html#by-make" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Parts by Make</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#fff;margin:0 0 4px">Company</h2>
+        <div style="height:2px;background:#00AEF0;width:26px;margin-bottom:13px"></div>
+        <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;font-size:14px">
+          <li><a href="About.dc.html" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">About DEP</a></li>
+          <li><a href="About.dc.html#network" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">The Network</a></li>
+          <li><a href="About.dc.html#non-oem" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">What Non-O.E.M. Means</a></li>
+          <li><a href="Hiring.dc.html" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Hiring</a></li>
+          <li><a href="Contact.dc.html" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#fff;margin:0 0 4px">Resources</h2>
+        <div style="height:2px;background:#00AEF0;width:26px;margin-bottom:13px"></div>
+        <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;font-size:14px">
+          <li><a href="Blog.dc.html" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Blog Index</a></li>
+          <li><a href="Post-Hard-To-Find-Parts.dc.html" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Sourcing Discontinued Parts</a></li>
+          <li><a href="Post-OEM-vs-Aftermarket.dc.html" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">OEM vs. Aftermarket</a></li>
+          <li><a href="Post-Same-Day-Delivery.dc.html" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Same-Day Delivery Math</a></li>
+          <li><a href="Home.dc.html#fuel-ox" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Fuel Ox Partner Offer</a></li>
+          <li><a href="Services.dc.html#financing" style="color:#C9D9E4;text-decoration:none" style-hover="color:#00AEF0">Get Pre-Approved</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#fff;margin:0 0 4px">Contact</h2>
+        <div style="height:2px;background:#00AEF0;width:26px;margin-bottom:13px"></div>
+        <a href="tel:+19082007199" style="display:block;font-family:var(--dep-mono);font-weight:600;font-size:19px;color:#00AEF0;text-decoration:none;margin-bottom:6px" style-hover="color:#fff">(908) 200-7199</a>
+        <p style="font-size:14px;margin:0 0 10px;color:#C9D9E4">Clinton, New Jersey 08809<br>Serving NJ, NY, PA and beyond</p>
+        <p style="font-size:14px;margin:0 0 14px;color:#8FA9BC">Mon–Fri 8:00am – 5:00pm<br>Sat by appointment · Sun closed</p>
+        <a href="Contact.dc.html#request-a-part" style="display:inline-block;background:#F2A81D;color:#08243A;text-decoration:none;padding:10px 18px;font-family:var(--font-heading);font-weight:600;font-size:15px;letter-spacing:.06em;text-transform:uppercase" style-hover="background:#fff">Request a Part</a>
+      </div>
+    </div>
+    <div style="border-top:1px solid #1C3D56">
+      <div style="max-width:1280px;margin:0 auto;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;font-size:13px;color:#7E97A9">
+        <span>© 2026 Direct Equipment Parts. Sourcing construction equipment parts and heavy machinery parts since 1994.</span>
+        <span style="font-family:var(--dep-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase">Non-O.E.M. alternative parts supplier · Clinton, NJ</span>
+      </div>
+    </div>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:540}}">
+class Component extends DCLogic {
+  state = { subscribed: false };
+  renderVals() {
+    return {
+      subscribed: this.state.subscribed,
+      onSubscribe: (e) => { e.preventDefault(); this.setState({ subscribed: true }); }
+    };
+  }
+}
+</script>
+</body>
+</html>
