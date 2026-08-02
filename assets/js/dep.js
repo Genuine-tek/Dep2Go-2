@@ -1,0 +1,187 @@
+/* Direct Equipment Parts — site behaviour.
+ *
+ * Plain ES5-compatible DOM code, no dependencies. This replaces the five
+ * React component classes the Claude Design export carried in
+ * <script type="text/x-dc"> blocks (Header, Footer, Sidebar, Contact,
+ * Hiring), which only ran inside the Design app.
+ *
+ * Everything binds off data-* hooks, so one file serves every page and a
+ * page that lacks a given widget simply skips it.
+ */
+(function () {
+  'use strict';
+
+  var EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+
+  /* ------------------------------------------------------------------ nav
+   * The header band pins to the top once it would scroll away. A spacer
+   * takes over its height so the page does not jump, and --dep-band is
+   * published for dep.css's scroll-margin-top (anchor links must clear the
+   * fixed band).
+   */
+  function initHeader() {
+    var band = $('[data-band]');
+    var spacer = $('[data-band-spacer]');
+    if (!band || !spacer) return;
+
+    var trigger = null, bandH = 0, pinned = false;
+
+    function pin() {
+      band.style.position = 'fixed';
+      band.style.top = '0';
+      band.style.left = '0';
+      band.style.right = '0';
+      band.style.boxShadow = '0 2px 10px rgba(8,36,58,.14)';
+      spacer.style.height = bandH + 'px';
+      pinned = true;
+    }
+    function unpin() {
+      band.style.position = 'static';
+      band.style.boxShadow = 'none';
+      spacer.style.height = '0px';
+      pinned = false;
+    }
+    function onScroll() {
+      if (trigger === null) return;
+      var should = window.scrollY >= trigger;
+      if (should !== pinned) { should ? pin() : unpin(); }
+    }
+    function measure() {
+      var was = pinned;
+      if (was) unpin();
+      trigger = spacer.getBoundingClientRect().top + window.scrollY;
+      bandH = band.offsetHeight;
+      document.documentElement.style.setProperty('--dep-band', bandH + 'px');
+      if (was) pin();
+      onScroll();
+    }
+
+    unpin();
+    measure();
+    if (window.ResizeObserver) new ResizeObserver(measure).observe(band);
+    window.addEventListener('resize', measure);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+
+    // Mobile disclosure menu
+    var toggle = $('[data-navtoggle]');
+    var list = $('[data-navlist]');
+    if (toggle && list) {
+      toggle.addEventListener('click', function () {
+        var open = list.getAttribute('data-open') !== 'true';
+        list.setAttribute('data-open', open ? 'true' : 'false');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        measure();
+      });
+    }
+
+    // Site search hands off to the contact page's request form
+    var search = $('[data-search-form]');
+    if (search) {
+      search.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var q = String(new FormData(search).get('q') || '').trim();
+        window.location.href = 'contact.html' +
+          (q ? '?q=' + encodeURIComponent(q) : '') + '#request-a-part';
+      });
+    }
+  }
+
+  /* --------------------------------------------------------------- forms */
+
+  function fail(form, message) {
+    var box = $('[data-error]', form);
+    if (box) { box.textContent = message; box.hidden = false; }
+    return false;
+  }
+
+  function clearError(form) {
+    var box = $('[data-error]', form);
+    if (box) { box.hidden = true; box.textContent = ''; }
+  }
+
+  // Swap the form out for the success panel that sits beside it.
+  function succeed(form) {
+    var panel = form.parentNode ? $('[data-success]', form.parentNode) : null;
+    if (!panel) {
+      var scope = form.closest('section, div');
+      panel = scope ? $('[data-success]', scope) : null;
+    }
+    if (!panel) return;
+    var stamp = $('[data-stamp]', panel);
+    if (stamp) {
+      stamp.textContent = new Date().toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: '2-digit'
+      });
+    }
+    form.hidden = true;
+    form.style.display = 'none';
+    panel.hidden = false;
+    panel.focus && panel.focus();
+  }
+
+  function initRequestForms() {
+    $$('[data-request-form]').forEach(function (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        clearError(form);
+        var data = new FormData(form);
+        var name = String(data.get('name') || '').trim();
+        var email = String(data.get('email') || '').trim();
+        if (!name) return fail(form, 'Add your name so we know who to call back.');
+        if (!EMAIL.test(email)) return fail(form, 'Add a valid email address for the quote.');
+        succeed(form);
+      });
+    });
+  }
+
+  function initApplyForm() {
+    $$('[data-apply-form]').forEach(function (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        clearError(form);
+        var email = String(new FormData(form).get('email') || '').trim();
+        if (!EMAIL.test(email)) return fail(form, 'Add a valid email address so we can reply.');
+        succeed(form);
+      });
+    });
+  }
+
+  function initSubscribe() {
+    var form = $('[data-subscribe-form]');
+    if (!form) return;
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = String(new FormData(form).get('email') || '').trim();
+      if (!EMAIL.test(email)) return;
+      var note = $('[data-subscribed]', form);
+      if (note) note.hidden = false;
+      form.reset();
+    });
+  }
+
+  // Carry a header search term into the contact page's notes field.
+  function initSearchPrefill() {
+    var notes = document.getElementById('ct-notes');
+    if (!notes || notes.value) return;
+    var q = new URLSearchParams(window.location.search).get('q');
+    if (q) notes.value = 'Looking for: ' + q;
+  }
+
+  function init() {
+    initHeader();
+    initRequestForms();
+    initApplyForm();
+    initSubscribe();
+    initSearchPrefill();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
