@@ -1,0 +1,47 @@
+{
+  "index.html": {
+    "active": "home",
+    "ticket": "DEP-24-0418",
+    "sidebarForm": true
+  },
+  "about.html": {
+    "active": "about",
+    "ticket": "DEP-24-0419",
+    "sidebarForm": true
+  },
+  "services.html": {
+    "active": "services",
+    "ticket": "DEP-24-0420",
+    "sidebarForm": true
+  },
+  "blog.html": {
+    "active": "blog",
+    "ticket": "DEP-24-0421",
+    "sidebarForm": true
+  },
+  "contact.html": {
+    "active": "contact",
+    "ticket": "DEP-24-0425",
+    "sidebarForm": false
+  },
+  "hiring.html": {
+    "active": "hiring",
+    "ticket": "DEP-24-0426",
+    "sidebarForm": false
+  },
+  "post-hard-to-find-parts.html": {
+    "active": "blog",
+    "ticket": "DEP-24-0422",
+    "sidebarForm": true
+  },
+  "post-oem-vs-aftermarket.html": {
+    "active": "blog",
+    "ticket": "DEP-24-0423",
+    "sidebarForm": true
+  },
+  "post-same-day-delivery.html": {
+    "active": "blog",
+    "ticket": "DEP-24-0424",
+    "sidebarForm": true
+  }
+}
