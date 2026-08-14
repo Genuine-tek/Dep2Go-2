@@ -171,8 +171,46 @@
     if (q) notes.value = 'Looking for: ' + q;
   }
 
+  /* -------------------------------------------------------------- sidebar
+   * The request-form sidebar is taller than most viewports, so pinning it to
+   * the top left its lower half — submit button included — permanently below
+   * the fold. What it wants is to scroll with the article until its foot
+   * reaches the bottom of the screen, then hold while the article scrolls on.
+   *
+   * CSS alone cannot express that. `bottom:` shifts a sticky element upward
+   * and only within its containing block; this column starts flush at the top
+   * of the shell, so there is nowhere to shift and the constraint never fires.
+   * A negative `top` does the job, but it depends on the element's own height,
+   * which no CSS length can reference — so it is measured here.
+   *
+   * Short sidebars (Contact, Hiring — no form) keep the normal top offset.
+   */
+  function initSidebar() {
+    var side = $('[data-side]');
+    if (!side || !side.querySelector('[data-request-form]')) return;
+    var GAP = 14;
+
+    function measure() {
+      if (window.innerWidth <= 1000) { side.style.top = ''; return; }
+      var band = parseInt(getComputedStyle(document.documentElement)
+        .getPropertyValue('--dep-band'), 10) || 123;
+      var rest = band + GAP;
+      var h = side.offsetHeight;
+      // Taller than the viewport: hold once the foot arrives, via negative top.
+      // Otherwise behave normally and sit below the pinned header band.
+      side.style.top = (h + rest + GAP > window.innerHeight)
+        ? (window.innerHeight - h - GAP) + 'px'
+        : rest + 'px';
+    }
+
+    measure();
+    if (window.ResizeObserver) new ResizeObserver(measure).observe(side);
+    window.addEventListener('resize', measure);
+  }
+
   function init() {
     initHeader();
+    initSidebar();
     initRequestForms();
     initApplyForm();
     initSubscribe();
