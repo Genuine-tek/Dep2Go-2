@@ -1,11 +1,13 @@
 /* Direct Equipment Parts — token overrides on the Industry system + the few
    things inline styles cannot express (media queries, keyframes, print). */
 
-/* Ease the steel duotone wash back so photos read closer to true color */
-.duotone::after { opacity: .05; }
+/* Photographs carry a blue wash so they sit inside the flat colour-blocked
+   palette rather than reading as a separate warm layer. Enough to unify the
+   page, not so much that the machinery stops looking like machinery. */
+.duotone::after { opacity: .14; }
 
 /* Blueprint frames read too faint at DEP's scale — thicken the hairline and
-   the corner registration marks, and darken them toward steel. */
+   the corner registration marks, and darken them toward the deep blue. */
 .blueprint { border-width: 2px; border-color: var(--dep-line); }
 .blueprint > .corner {
   width: 16px; height: 16px;
@@ -19,36 +21,41 @@
 .blueprint > .corner.br { bottom: -8px; right: -8px; }
 
 :root {
-  --dep-cyan: #00AEF0;
-  --dep-steel: #08243A;
-  --dep-mid: #0E5C88;
-  --dep-amber: #F2A81D;
-  --dep-concrete: #EEF2F5;
+  --dep-cyan: #3AA5F2;
+  --dep-steel: #0A3269;
+  --dep-mid: #0F62B5;
+  --dep-amber: #F9C21C;
+  --dep-concrete: #EAF2FB;
   --dep-ink: #14181C;
-  --dep-line: #C9D4DC;
-  --dep-line-soft: #DFE6EB;
+  --dep-line: #BFD5EC;
+  --dep-line-soft: #DAE6F5;
   --dep-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Industry tokens retuned to the DEP palette */
   --color-bg: #FFFFFF;
-  --color-surface: #EEF2F5;
+  --color-surface: #EAF2FB;
   --color-text: #14181C;
-  --color-accent: #0E5C88;
-  --color-accent-2: #00AEF0;
-  --color-divider: #C9D4DC;
-  --color-accent-100: #E8F6FD;
-  --color-accent-200: #C7EAFB;
-  --color-accent-300: #8FD8F7;
-  --color-accent-400: #4CC3F3;
-  --color-accent-500: #00AEF0;
-  --color-accent-600: #0B84BC;
-  --color-accent-700: #0E5C88;
-  --color-accent-800: #0B3E5C;
-  --color-accent-900: #08243A;
+  --color-accent: #0F62B5;
+  --color-accent-2: #3AA5F2;
+  --color-divider: #BFD5EC;
+  --color-accent-100: #E7F3FE;
+  --color-accent-200: #C9E6FD;
+  --color-accent-300: #8FC9F5;
+  --color-accent-400: #5FB3F5;
+  --color-accent-500: #3AA5F2;
+  --color-accent-600: #1279D8;
+  --color-accent-700: #0F62B5;
+  --color-accent-800: #0A3D7E;
+  --color-accent-900: #0A3269;
 }
 
 html { scroll-behavior: smooth; }
 body { margin: 0; background: #fff; font-size: 16px; line-height: 1.6; }
+
+/* The success panels toggle on [hidden], but they carry an inline display:
+   that outranks the UA rule — without this the footer's "You're on the list"
+   confirmation shows on every page load. */
+[hidden] { display: none !important; }
 [id] { scroll-margin-top: calc(var(--dep-band, 123px) + 14px); }
 
 a { color: var(--dep-mid); text-underline-offset: 3px; }
@@ -83,11 +90,11 @@ a:hover { color: var(--dep-steel); }
 }
 [data-main] a[style*="padding"]:hover, [data-reveal] a[style*="padding"]:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(8, 36, 58, .3);
+  box-shadow: 0 10px 24px rgba(10, 50, 105, .3);
 }
 [data-main] a[style*="padding"]:active, [data-reveal] a[style*="padding"]:active {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(8, 36, 58, .26);
+  box-shadow: 0 4px 12px rgba(10, 50, 105, .26);
 }
 @media (prefers-reduced-motion: reduce) {
   [data-main] a, [data-side] a, [data-reveal] a { transition: color .16s ease; }
@@ -95,11 +102,11 @@ a:hover { color: var(--dep-steel); }
   [data-main] p > a:hover, [data-side] p > a:hover { background-size: 100% 3px; }
 }
 h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
-input::placeholder, textarea::placeholder { color: #5F6E78; opacity: 1; }
+input::placeholder, textarea::placeholder { color: #5D7085; opacity: 1; }
 p { text-wrap: pretty; }
 
 :focus-visible { outline: 3px solid var(--dep-cyan); outline-offset: 2px; }
-::selection { background: #C7EAFB; }
+::selection { background: #C9E6FD; }
 
 [data-navlink][aria-current="page"] { color: var(--dep-cyan); border-bottom-color: var(--dep-cyan); }
 
@@ -123,6 +130,26 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 [data-shell] { display: flex; align-items: flex-start; gap: 34px; }
 [data-side] { flex: 0 0 23%; min-width: 258px; position: sticky; top: calc(var(--dep-band, 123px) + 14px); }
 [data-main] { flex: 1 1 0; min-width: 0; }
+
+/* The sidebar carrying the request form runs ~1630px — taller than most
+   viewports — so pinning it to the top parked its lower half, submit button
+   included, permanently below the fold.
+
+   It wants to scroll normally until its foot reaches the bottom of the screen
+   and only then hold. `bottom:` cannot express that: sticky shifts an element
+   UP toward a bottom inset, and only within its containing block — this column
+   starts flush at the top of the shell, so there is no room above it to shift
+   into and the constraint never engages. The offset has to be a negative `top`
+   derived from the measured height, which only JS knows: initSidebar() in
+   dep.js sets it inline and keeps it current on resize.
+
+   Without JS this falls back to scrolling normally, which is imperfect but
+   still leaves the entire form reachable. Scoped with :has() because the
+   Contact and Hiring sidebars omit the form and are short enough that pinning
+   to the top remains correct for them. */
+@media (min-width: 1001px) {
+  [data-side]:has([data-request-form]) { top: auto; }
+}
 
 [data-mobilebar] { display: none; }
 [data-wide-only] { display: revert; }
@@ -150,9 +177,9 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
   [data-navrow] { justify-content: flex-start !important; }
   [data-navtoggle] { display: inline-flex !important; }
   [data-navlist] { display: none !important; }
-  [data-navlist][data-open="true"] { display: flex !important; flex-direction: column; gap: 0 !important; width: 100%; order: 3; border-top: 1px solid #1C3D56; }
-  [data-navlist][data-open="true"] > li > a { padding: 14px 2px !important; border-bottom: 1px solid #16394F !important; border-left: 3px solid transparent; padding-left: 11px !important; }
-  [data-navlist][data-open="true"] > li > a[aria-current="page"] { border-left-color: #00AEF0; }
+  [data-navlist][data-open="true"] { display: flex !important; flex-direction: column; gap: 0 !important; width: 100%; order: 3; border-top: 1px solid #17518F; }
+  [data-navlist][data-open="true"] > li > a { padding: 14px 2px !important; border-bottom: 1px solid #154C88 !important; border-left: 3px solid transparent; padding-left: 11px !important; }
+  [data-navlist][data-open="true"] > li > a[aria-current="page"] { border-left-color: #3AA5F2; }
   [data-navsearch] { flex: 0 1 340px; }
   [data-navsearch] input { width: 100% !important; max-width: none !important; }
   [data-pillrow] {
@@ -163,15 +190,51 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
   [data-pillrow] > a { flex: none; }
   /* Stacked category lists: rules move from the side to the top. */
   [data-cols3] { grid-template-columns: 1fr 1fr !important; gap: 0 24px !important; }
-  [data-cols3] > div { padding: 16px 0 !important; border-left: 0 !important; border-top: 1px solid #DFE6EB !important; }
+  [data-cols3] > div { padding: 16px 0 !important; border-left: 0 !important; border-top: 1px solid #DAE6F5 !important; }
 }
 
 @media (max-width: 720px) {
   [data-stack-sm] { flex-direction: column !important; align-items: stretch !important; }
+
+  /* Once the row stacks, the figure's `flex: 1 1 300px` basis switches from
+     width to HEIGHT, pinning it at 300px tall while the 16/10 image box inside
+     was only ~160px — that was the band of white figure background under the
+     photo. Its inline align-self:flex-start also outranked the row's stretch,
+     holding it at its 260px min-width instead of filling the column.
+
+     width:100% rather than align-self:stretch, deliberately: stretch resolves
+     the cross size only after the main size, so the figure would measure its
+     content height against a zero max-content width — the <img> is absolutely
+     positioned, so the aspect-ratio box carries no intrinsic width — and
+     collapse to just its borders. An explicit percentage is definite up front,
+     so the 16/10 box can resolve a real height from it. */
+  [data-stack-sm] > figure {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
   [data-hide-sm] { display: none !important; }
   [data-cols3] { grid-template-columns: 1fr !important; }
   [data-fieldgrid] > div { border-right: 0 !important; }
   [data-navsearch] button { padding: 0 12px !important; }
+
+  /* Phone header: the tagline and its phone button stay beside the logo rather
+     than dropping out. The row must not wrap for them to sit side by side, so
+     the logo and the tagline are both scaled down to fit a 320px screen. */
+  [data-idbar] {
+    flex-wrap: nowrap !important;
+    gap: 12px !important;
+    padding: 12px 16px !important;
+  }
+  [data-idbar] img { height: 50px !important; }
+  [data-tagline] { min-width: 0; text-align: right !important; }
+  [data-tagline] > span { font-size: 13px !important; }
+  [data-tagline] a {
+    margin-top: 5px !important;
+    padding: 4px 10px !important;
+    font-size: 14px !important;
+    white-space: nowrap;
+  }
 }
 
 /* Phones: single-column everything, and the ticket forms keep 16px inputs so
@@ -207,22 +270,22 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
    carries an inline style= attribute, which outranks a class selector.
    --------------------------------------------------------------- */
 .hv-1:hover { color:#fff !important; }
-.hv-2:hover { background:#08243A !important; color:#fff !important; }
-.hv-3:hover { background:#0E5C88 !important; border-color:#0E5C88 !important; }
-.hv-4:hover { color:#00AEF0 !important; }
-.hv-5:hover { background:#4CC3F3 !important; border-color:#4CC3F3 !important; }
-.hv-6:hover { background:#08243A !important; }
-.hv-7:hover { background:#08243A !important; color:#F2A81D !important; }
+.hv-2:hover { background:#0A3269 !important; color:#fff !important; }
+.hv-3:hover { background:#0F62B5 !important; border-color:#0F62B5 !important; }
+.hv-4:hover { color:#3AA5F2 !important; }
+.hv-5:hover { background:#5FB3F5 !important; border-color:#5FB3F5 !important; }
+.hv-6:hover { background:#0A3269 !important; }
+.hv-7:hover { background:#0A3269 !important; color:#F9C21C !important; }
 .hv-8:hover { background:#fff !important; border-color:#fff !important; }
 .hv-9:hover { background:#fff !important; }
-.hv-10:hover { color:#08243A !important; }
-.hv-11:hover { background:#08243A !important; color:#F2A81D !important; border-color:#08243A !important; }
-.hv-12:hover { background:#EEF2F5 !important; border-left-color:#00AEF0 !important; color:#0E5C88 !important; }
-.hv-13:hover { transform:translateY(-4px) !important; box-shadow:0 12px 32px rgba(8,36,58,.28) !important; }
-.hv-14:hover { border-color:#00AEF0 !important; }
-.hv-15:hover { color:#0E5C88 !important; }
-.hv-16:hover { border-color:#00AEF0 !important; background:#E8F6FD !important; }
-.hv-17:hover { background:#0E5C88 !important; color:#fff !important; }
-.hv-18:hover { border-color:#00AEF0 !important; color:#00AEF0 !important; }
+.hv-10:hover { color:#0A3269 !important; }
+.hv-11:hover { background:#0A3269 !important; color:#F9C21C !important; border-color:#0A3269 !important; }
+.hv-12:hover { background:#EAF2FB !important; border-left-color:#3AA5F2 !important; color:#0F62B5 !important; }
+.hv-13:hover { transform:translateY(-4px) !important; box-shadow:0 12px 32px rgba(10,50,105,.28) !important; }
+.hv-14:hover { border-color:#3AA5F2 !important; }
+.hv-15:hover { color:#0F62B5 !important; }
+.hv-16:hover { border-color:#3AA5F2 !important; background:#E7F3FE !important; }
+.hv-17:hover { background:#0F62B5 !important; color:#fff !important; }
+.hv-18:hover { border-color:#3AA5F2 !important; color:#3AA5F2 !important; }
 
-.fc-1:focus { background:#E8F6FD !important; }
+.fc-1:focus { background:#E7F3FE !important; }
