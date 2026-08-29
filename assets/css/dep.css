@@ -151,6 +151,12 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
   [data-side]:has([data-request-form]) { top: auto; }
 }
 
+/* The action pills (Request a Part + phone) stay centred at every width and in
+   both the static and the pinned state. Unconditional rather than relying on
+   the inline justify-content in the header markup, so no media query or later
+   edit can knock them off centre on any device. */
+[data-pillrow] { justify-content: center !important; }
+
 [data-mobilebar] { display: none; }
 [data-wide-only] { display: revert; }
 
@@ -182,11 +188,6 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
   [data-navlist][data-open="true"] > li > a[aria-current="page"] { border-left-color: #3AA5F2; }
   [data-navsearch] { flex: 0 1 340px; }
   [data-navsearch] input { width: 100% !important; max-width: none !important; }
-  [data-pillrow] {
-    flex-wrap: nowrap !important; justify-content: flex-start !important;
-    overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
-  }
-  [data-pillrow]::-webkit-scrollbar { display: none; }
   [data-pillrow] > a { flex: none; }
   /* Stacked category lists: rules move from the side to the top. */
   [data-cols3] { grid-template-columns: 1fr 1fr !important; gap: 0 24px !important; }
@@ -244,6 +245,9 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
   [data-side] aside { gap: 20px !important; }
   input, textarea { font-size: 16px !important; }
   [data-mobilebar] a { font-size: 15px !important; padding: 14px 6px !important; }
+  /* Tighten the two remaining pills so they sit on one line on a phone. */
+  [data-pillrow] { gap: 8px !important; }
+  [data-pillrow] > a { padding: 8px 14px !important; font-size: 13.5px !important; gap: 6px !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -289,3 +293,19 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 .hv-18:hover { border-color:#3AA5F2 !important; color:#3AA5F2 !important; }
 
 .fc-1:focus { background:#E7F3FE !important; }
+
+
+/* Services page CTA pattern. Primary is an orange fill, secondary a white
+   outline; both invert to the deep ground on hover. Hand-written rather than
+   generated, so they are not overwritten if the state block is regenerated. */
+.hv-svc-primary:hover { background:#0A3269 !important; color:#F9C21C !important; border-color:#0A3269 !important; }
+.hv-svc-secondary:hover { background:#0A3269 !important; color:#fff !important; border-color:#0A3269 !important; }
+
+
+/* Header delivery CTA band. Named rather than generated (hv-N) so a future
+   regeneration of the state block cannot clobber it. */
+.hv-delivery-cta:hover {
+  background: #FFD451 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(10, 50, 105, .35);
+}
