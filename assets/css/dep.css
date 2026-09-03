@@ -1,6 +1,40 @@
 /* Direct Equipment Parts — token overrides on the Industry system + the few
    things inline styles cannot express (media queries, keyframes, print). */
 
+/* ── typefaces ──────────────────────────────────────────────────────────────
+   Self-hosted rather than pulled from Google Fonts: no third-party request,
+   and the pages keep working offline and behind a firewall.
+
+   Ubuntu ships as static weights and the headings only ever use 600, so one
+   file covers them — declared across 600-700 so that 600 resolves to the real
+   Bold rather than a synthesised one. Rubik ships as a variable font, so a
+   single file per style spans every body weight (400 body, 500 accents, 700
+   strong) instead of four separate downloads.
+
+   TTF because this machine has no fontTools/brotli to convert. Re-encoding
+   these three as WOFF2 would cut the ~950KB payload by roughly 70%. */
+@font-face {
+  font-family: "Ubuntu";
+  src: url("../fonts/Ubuntu-Bold.ttf") format("truetype");
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Rubik";
+  src: url("../fonts/Rubik-VariableFont_wght.ttf") format("truetype-variations");
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Rubik";
+  src: url("../fonts/Rubik-Italic-VariableFont_wght.ttf") format("truetype-variations");
+  font-weight: 300 900;
+  font-style: italic;
+  font-display: swap;
+}
+
 /* Photographs carry a blue wash so they sit inside the flat colour-blocked
    palette rather than reading as a separate warm layer. Enough to unify the
    page, not so much that the machinery stops looking like machinery. */
@@ -30,6 +64,11 @@
   --dep-line: #BFD5EC;
   --dep-line-soft: #DAE6F5;
   --dep-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Ubuntu for headings, Rubik for everything else. Overridden here rather
+     than in industry.css so the vendor design system stays untouched. */
+  --font-heading: "Ubuntu", system-ui, sans-serif;
+  --font-body: "Rubik", system-ui, sans-serif;
 
   /* Industry tokens retuned to the DEP palette */
   --color-bg: #FFFFFF;
@@ -186,8 +225,6 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
   [data-navlist][data-open="true"] { display: flex !important; flex-direction: column; gap: 0 !important; width: 100%; order: 3; border-top: 1px solid #17518F; }
   [data-navlist][data-open="true"] > li > a { padding: 14px 2px !important; border-bottom: 1px solid #154C88 !important; border-left: 3px solid transparent; padding-left: 11px !important; }
   [data-navlist][data-open="true"] > li > a[aria-current="page"] { border-left-color: #3AA5F2; }
-  [data-navsearch] { flex: 0 1 340px; }
-  [data-navsearch] input { width: 100% !important; max-width: none !important; }
   [data-pillrow] > a { flex: none; }
   /* Stacked category lists: rules move from the side to the top. */
   [data-cols3] { grid-template-columns: 1fr 1fr !important; gap: 0 24px !important; }
@@ -217,7 +254,6 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
   [data-hide-sm] { display: none !important; }
   [data-cols3] { grid-template-columns: 1fr !important; }
   [data-fieldgrid] > div { border-right: 0 !important; }
-  [data-navsearch] button { padding: 0 12px !important; }
 
   /* Phone header: the tagline and its phone button stay beside the logo rather
      than dropping out. The row must not wrap for them to sit side by side, so
