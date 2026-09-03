@@ -78,16 +78,6 @@
       });
     }
 
-    // Site search hands off to the contact page's request form
-    var search = $('[data-search-form]');
-    if (search) {
-      search.addEventListener('submit', function (e) {
-        e.preventDefault();
-        var q = String(new FormData(search).get('q') || '').trim();
-        window.location.href = 'contact.html' +
-          (q ? '?q=' + encodeURIComponent(q) : '') + '#request-a-part';
-      });
-    }
   }
 
   /* --------------------------------------------------------------- forms */
@@ -163,13 +153,6 @@
     });
   }
 
-  // Carry a header search term into the contact page's notes field.
-  function initSearchPrefill() {
-    var notes = document.getElementById('ct-notes');
-    if (!notes || notes.value) return;
-    var q = new URLSearchParams(window.location.search).get('q');
-    if (q) notes.value = 'Looking for: ' + q;
-  }
 
   /* -------------------------------------------------------------- sidebar
    * The request-form sidebar is taller than most viewports, so pinning it to
@@ -214,7 +197,6 @@
     initRequestForms();
     initApplyForm();
     initSubscribe();
-    initSearchPrefill();
   }
 
   if (document.readyState === 'loading') {
