@@ -28,7 +28,7 @@
 <link rel="stylesheet" href="assets/css/industry.css">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
-<link rel="stylesheet" href="assets/css/dep.css?v=14">
+<link rel="stylesheet" href="assets/css/dep.css?v=33">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"Direct Equipment Parts","description":"Supplier of construction equipment parts and heavy machinery parts, specializing in hard to find and non O.E.M. alternative components.","foundingDate":"1994","telephone":"+1-973-332-8598","url":"https://dep2go.com/","address":{"@type":"PostalAddress","addressLocality":"Clinton","addressRegion":"NJ","postalCode":"08809","addressCountry":"US"},"areaServed":"New Jersey and surrounding region","openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"08:00","closes":"17:00"}]}</script>
 </head>
 <body>
@@ -49,16 +49,23 @@
         <img src="assets/img/dep-logo-mark.png" alt="Direct Equipment Parts — construction equipment parts and heavy machinery parts supplier in Clinton, New Jersey" style="display:block;height:clamp(66px,10vw,140px);width:auto">
       </a>
 
+      <!-- Self-hosted header video. Drop the file in assets/video/ and add a
+           source inside the <video>, e.g.
+             <source src="assets/video/header.mp4" type="video/mp4">
+           It is muted + playsinline so browsers allow it to autoplay inline.
+           The height clamp is the SAME as the logo above, so the video can
+           never sit taller than the logo mark at any viewport width. Until a
+           source is added the frame shows the placeholder label behind it. -->
+      <div data-headervideo="" style="position:relative;flex:1 1 auto;min-width:0;height:clamp(66px,10vw,140px);background:#EAF2FB;border:2px solid #BFD5EC;overflow:hidden">
+        <span style="position:absolute;inset:0;display:grid;place-items:center;font-family:var(--font-body);font-size:10px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#0F62B5">Video</span>
+        <video muted autoplay loop playsinline preload="auto" aria-hidden="true" style="position:relative;display:block;width:100%;height:100%;object-fit:cover"><source src="assets/video/header.mp4?v=2" type="video/mp4"></video>
+      </div>
+
       <div data-tagline="" style="text-align:center">
         <span style="display:block;font-family:var(--font-heading);font-weight:600;font-size:clamp(17px,1.9vw,22px);line-height:1.1;color:#0A3269;text-transform:uppercase">One Call Gets You Up<span style="color:#0F62B5"> and Running Fast</span></span>
         <a href="tel:+19733328598" style="display:inline-block;margin-top:7px;border:2px solid #0A3269;padding:5px 16px;font-family:var(--font-body);font-weight:600;font-size:19px;color:#0A3269;text-decoration:none;letter-spacing:-.01em" class="hv-2">(973) 332-8598</a>
       </div>
 
-      <div data-hide-md="" style="border-left:3px solid #3AA5F2;padding-left:14px;text-align:left;min-width:190px">
-        <span style="display:block;font-family:var(--font-heading);font-weight:600;font-size:19px;line-height:1.15;color:#0A3269;text-transform:uppercase">Since 1994 · Clinton, NJ</span>
-        <span style="display:block;font-size:13px;color:#485B73;margin-top:3px">Mon–Fri 8:00am – 5:00pm</span>
-        <span style="display:block;font-size:13px;color:#485B73">Sat by appointment · Sun closed</span>
-      </div>
     </div>
   </div>
 
@@ -113,23 +120,28 @@
 
   <main>
     <div style="max-width:1280px;margin:0 auto;padding:26px 20px 0">
-      <h1 style="font-size:clamp(26px,4.6vw,39px);line-height:1.05;margin:0 0 4px;text-transform:uppercase;color:#0A3269;letter-spacing:-.01em">Direct Equipment Parts: <span style="color:#0F62B5">Construction Equipment Parts &amp; Heavy Machinery Parts</span></h1>
+      <h1 style="font-size:clamp(26px,4.6vw,39px);line-height:1.05;margin:0 0 4px;text-transform:uppercase;color:#0A3269;letter-spacing:-.01em">30 Years of Finding and Delivering <span style="color:#0F62B5">Construction Equipment &amp; Heavy Machinery Parts</span></h1>
       <p style="margin:0 0 20px;font-family:var(--font-body);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#596C82">Non O.E.M. specialist · Clinton, New Jersey · Sourcing since 1994</p>
+
+      <div style="margin:0 0 18px">
+        <h2 style="margin:0 0 4px;font-size:clamp(21px,3vw,29px);line-height:1.1;text-transform:uppercase;color:#0A3269">Know What You Need, or Need It Figured Out?</h2>
+        <p style="margin:0;font-size:clamp(16px,1.9vw,19px);line-height:1.4;color:#0F62B5;font-weight:500">We will get it to you fast!</p>
+      </div>
 
       <section aria-label="Ways to reach us" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:18px;margin-bottom:34px">
         <article class="blueprint hv-13" style="position:relative;min-height:296px;background:#0A3269;transition:transform .18s ease,box-shadow .18s ease">
           <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
           <div class="duotone" style="position:absolute;inset:0;background:#0F4E92;filter:brightness(1.1)"><img src="assets/img/dep-hero-person.webp" alt="Parts handler moving a pallet of heavy machinery track rollers by forklift, ready for a same day parts run" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 15.4%"></div>
           <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,50,105,.86) 0%,rgba(10,50,105,.42) 44%,rgba(10,50,105,0) 72%);pointer-events:none"></div>
-          <h2 style="position:absolute;top:20px;left:22px;right:22px;margin:0;font-size:clamp(26px,4vw,37px);line-height:.98;color:#fff;text-transform:uppercase;text-shadow:0 2px 10px rgba(10,50,105,.5);pointer-events:none">Know<br>What You Need</h2>
+          <h2 style="position:absolute;top:20px;left:22px;right:22px;margin:0;font-size:clamp(26px,4vw,37px);line-height:.98;color:#fff;text-transform:uppercase;text-shadow:0 2px 10px rgba(10,50,105,.5);pointer-events:none">If You Know<br>What You Need</h2>
           <a href="contact.html#request-a-part" style="position:absolute;bottom:18px;right:18px;background:#F9C21C;color:#0A3269;text-decoration:none;padding:11px 18px;white-space:nowrap;font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:.05em;text-transform:uppercase;border:1px solid #D9A50C" class="hv-8">Start a Request</a>
         </article>
         <article class="blueprint hv-13" style="position:relative;min-height:296px;background:#0A3269;transition:transform .18s ease,box-shadow .18s ease">
           <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
           <div class="duotone" style="position:absolute;inset:0;background:#0F4E92;filter:brightness(1.1)"><img src="assets/img/dep-hero-request.webp" alt="Crawler dozer beside pallets of track chain, rollers and sprockets in the yard - construction equipment parts sourced to order" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:52.08% 50%"></div>
           <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,50,105,.86) 0%,rgba(10,50,105,.42) 44%,rgba(10,50,105,0) 72%);pointer-events:none"></div>
-          <h2 style="position:absolute;top:20px;left:22px;right:22px;margin:0;font-size:clamp(26px,4vw,37px);line-height:.98;color:#fff;text-transform:uppercase;text-shadow:0 2px 10px rgba(10,50,105,.5);pointer-events:none">Don’t Know<br>What You Need</h2>
-          <a href="contact.html#request-a-part" style="position:absolute;bottom:18px;right:18px;background:#F9C21C;color:#0A3269;text-decoration:none;padding:11px 18px;white-space:nowrap;font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:.05em;text-transform:uppercase;border:1px solid #D9A50C" class="hv-8">We’ll Figure It Out</a>
+          <h2 style="position:absolute;top:20px;left:22px;right:22px;margin:0;font-size:clamp(26px,4vw,37px);line-height:.98;color:#fff;text-transform:uppercase;text-shadow:0 2px 10px rgba(10,50,105,.5);pointer-events:none">If You<br>Don’t Know</h2>
+          <a href="tel:+19733328598" style="position:absolute;bottom:18px;right:18px;display:inline-flex;align-items:center;gap:8px;background:#F9C21C;color:#0A3269;text-decoration:none;padding:11px 18px;white-space:nowrap;font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:.05em;text-transform:uppercase;border:1px solid #D9A50C" class="hv-8"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Call Us For Help</a>
         </article>
         <article class="blueprint hv-13" style="position:relative;min-height:296px;background:#0A3269;transition:transform .18s ease,box-shadow .18s ease">
           <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
@@ -485,6 +497,6 @@
 </footer>
 <!-- /@footer -->
 </div>
-<script src="assets/js/dep.js?v=2"></script>
+<script src="assets/js/dep.js?v=4"></script>
 </body>
 </html>

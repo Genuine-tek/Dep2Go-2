@@ -28,7 +28,7 @@
 <link rel="stylesheet" href="assets/css/industry.css">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
-<link rel="stylesheet" href="assets/css/dep.css?v=14">
+<link rel="stylesheet" href="assets/css/dep.css?v=33">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"Direct Equipment Parts","telephone":"+1-973-332-8598","foundingDate":"1994","address":{"@type":"PostalAddress","addressLocality":"Clinton","addressRegion":"NJ","postalCode":"08809","addressCountry":"US"},"makesOffer":[{"@type":"Offer","name":"Hard to find and obsolete parts sourcing"},{"@type":"Offer","name":"New construction equipment parts"},{"@type":"Offer","name":"Used and refurbished heavy machinery parts"},{"@type":"Offer","name":"Custom builds and legacy solutions"},{"@type":"Offer","name":"Same day and next day parts delivery"},{"@type":"Offer","name":"Service repair consultation"},{"@type":"Offer","name":"Financing and flexible payment"},{"@type":"Offer","name":"Equipment sales"}]}</script>
 </head>
 <body>
@@ -49,16 +49,23 @@
         <img src="assets/img/dep-logo-mark.png" alt="Direct Equipment Parts — construction equipment parts and heavy machinery parts supplier in Clinton, New Jersey" style="display:block;height:clamp(66px,10vw,140px);width:auto">
       </a>
 
+      <!-- Self-hosted header video. Drop the file in assets/video/ and add a
+           source inside the <video>, e.g.
+             <source src="assets/video/header.mp4" type="video/mp4">
+           It is muted + playsinline so browsers allow it to autoplay inline.
+           The height clamp is the SAME as the logo above, so the video can
+           never sit taller than the logo mark at any viewport width. Until a
+           source is added the frame shows the placeholder label behind it. -->
+      <div data-headervideo="" style="position:relative;flex:1 1 auto;min-width:0;height:clamp(66px,10vw,140px);background:#EAF2FB;border:2px solid #BFD5EC;overflow:hidden">
+        <span style="position:absolute;inset:0;display:grid;place-items:center;font-family:var(--font-body);font-size:10px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#0F62B5">Video</span>
+        <video muted autoplay loop playsinline preload="auto" aria-hidden="true" style="position:relative;display:block;width:100%;height:100%;object-fit:cover"><source src="assets/video/header.mp4?v=2" type="video/mp4"></video>
+      </div>
+
       <div data-tagline="" style="text-align:center">
         <span style="display:block;font-family:var(--font-heading);font-weight:600;font-size:clamp(17px,1.9vw,22px);line-height:1.1;color:#0A3269;text-transform:uppercase">One Call Gets You Up<span style="color:#0F62B5"> and Running Fast</span></span>
         <a href="tel:+19733328598" style="display:inline-block;margin-top:7px;border:2px solid #0A3269;padding:5px 16px;font-family:var(--font-body);font-weight:600;font-size:19px;color:#0A3269;text-decoration:none;letter-spacing:-.01em" class="hv-2">(973) 332-8598</a>
       </div>
 
-      <div data-hide-md="" style="border-left:3px solid #3AA5F2;padding-left:14px;text-align:left;min-width:190px">
-        <span style="display:block;font-family:var(--font-heading);font-weight:600;font-size:19px;line-height:1.15;color:#0A3269;text-transform:uppercase">Since 1994 · Clinton, NJ</span>
-        <span style="display:block;font-size:13px;color:#485B73;margin-top:3px">Mon–Fri 8:00am – 5:00pm</span>
-        <span style="display:block;font-size:13px;color:#485B73">Sat by appointment · Sun closed</span>
-      </div>
     </div>
   </div>
 
@@ -249,22 +256,6 @@
 <!-- /@sidebar --></div>
 
         <div data-main="">
-          <!-- Video placeholder. Replace the inner <div> with a real
-               <video controls poster="..."> when the shop footage is ready;
-               the blueprint frame and the 16/9 box stay exactly as they are. -->
-          <figure data-reveal="" class="blueprint" style="margin:0 0 40px;background:#EAF2FB">
-            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
-            <div style="position:relative;aspect-ratio:16/9;display:grid;place-items:center;text-align:center;padding:20px">
-              <div>
-                <div style="display:grid;place-items:center;width:74px;height:74px;margin:0 auto 14px;border:2px solid #0F62B5;background:#fff">
-                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#0F62B5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"></path></svg>
-                </div>
-                <p style="margin:0 0 4px;font-family:var(--font-body);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#0F62B5">Video</p>
-                <p style="margin:0;font-family:var(--font-heading);font-weight:600;font-size:clamp(19px,2.6vw,24px);text-transform:uppercase;color:#0A3269">Inside the Parts Desk</p>
-                <p style="margin:6px 0 0;font-size:15px;color:#31435C">Shop walkthrough — video coming soon.</p>
-              </div>
-            </div>
-          </figure>
 
           <nav aria-label="Services index" data-reveal="" style="border-top:3px solid #0A3269;background:#EAF2FB;padding:18px 20px;margin-bottom:40px">
             <p style="margin:0 0 10px;font-family:var(--font-body);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#0F62B5">Jump to</p>
@@ -479,6 +470,6 @@
 </footer>
 <!-- /@footer -->
 </div>
-<script src="assets/js/dep.js?v=2"></script>
+<script src="assets/js/dep.js?v=4"></script>
 </body>
 </html>
