@@ -190,6 +190,37 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
   [data-side]:has([data-request-form]) { top: auto; }
 }
 
+/* Below 901px there is no room for three items across, so the video drops to
+   its own full-width row beneath the logo and the tagline instead of being
+   hidden. Grid rather than flex wrapping: the two rows are then explicit, and
+   the tagline can never be bumped off row 1 by a few pixels of rounding. */
+@media (max-width: 900px) {
+  [data-idbar] {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: "logo tagline" "video video";
+    align-items: center;
+  }
+  [data-idbar] > a { grid-area: logo; }
+  [data-tagline] { grid-area: tagline; }
+  /* Full width now, so the height has to grow with it: the clamp inherited
+     from the beside-the-logo slot left a 9:1 letterbox that showed under a
+     fifth of the frame. This keeps it near 3-5:1 without the header eating
+     the screen. */
+  [data-headervideo] {
+    grid-area: video;
+    width: 100%;
+    height: clamp(88px, 17.6vw, 176px) !important;
+  }
+}
+
+/* The tagline + phone box occupy a quarter of the id bar and sit hard right,
+   so the logo keeps the rest. Desktop only: below 900px the bar has its own
+   rules (and a quarter of a phone screen is narrower than the phone button). */
+@media (min-width: 901px) {
+  [data-tagline] { flex: 0 0 25%; max-width: 25%; }
+}
+
 /* The action pills (Request a Part + phone) stay centred at every width and in
    both the static and the pinned state. Unconditional rather than relying on
    the inline justify-content in the header markup, so no media query or later
@@ -197,6 +228,19 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 [data-pillrow] { justify-content: center !important; }
 
 [data-mobilebar] { display: none; }
+
+/* The fixed Call / Request bar is parked off-screen until dep.js reports the
+   visitor is 3% into the page, then slides up. Hidden state also drops
+   pointer events so it cannot be tapped while it is off-screen. */
+[data-mobilebar] {
+  transform: translateY(110%);
+  pointer-events: none;
+  transition: transform .25s ease;
+}
+[data-mobilebar][data-shown="true"] { transform: none; pointer-events: auto; }
+@media (prefers-reduced-motion: reduce) {
+  [data-mobilebar] { transition: none; }
+}
 [data-wide-only] { display: revert; }
 
 /* Tablet & down: sidebar drops under the article. */
@@ -218,7 +262,6 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 
 /* Nav collapses to a disclosure menu; the action pills become one scrolling row. */
 @media (max-width: 900px) {
-  [data-hide-md] { display: none !important; }
   [data-navrow] { justify-content: flex-start !important; }
   [data-navtoggle] { display: inline-flex !important; }
   [data-navlist] { display: none !important; }
@@ -264,6 +307,19 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
     padding: 12px 16px !important;
   }
   [data-idbar] img { height: 50px !important; }
+  /* Phone only: 5% off the video row. Tablet (721-900px) keeps the taller
+     clamp set in the max-width:900px block above. */
+  [data-headervideo] { height: clamp(83.6px, 16.72vw, 167.2px) !important; }
+
+  /* Phone: the delivery CTA ran to three lines at 19px. Scaled about a third
+     down so it sets in two. */
+  [data-ctaband] > div { padding: 10px 16px !important; }
+  [data-ctaband] a {
+    padding: 9px 22px !important;
+    font-size: 13px !important;
+    gap: 7px !important;
+  }
+  [data-ctaband] a svg { width: 14px !important; height: 14px !important; }
   [data-tagline] { min-width: 0; text-align: right !important; }
   [data-tagline] > span { font-size: 13px !important; }
   [data-tagline] a {
@@ -280,10 +336,38 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
   [data-shell] { gap: 30px; }
   [data-side] aside { gap: 20px !important; }
   input, textarea { font-size: 16px !important; }
-  [data-mobilebar] a { font-size: 15px !important; padding: 14px 6px !important; }
-  /* Tighten the two remaining pills so they sit on one line on a phone. */
-  [data-pillrow] { gap: 8px !important; }
-  [data-pillrow] > a { padding: 8px 14px !important; font-size: 13.5px !important; gap: 6px !important; }
+  /* Both labels must hold one line - the phone number broke to two on the
+     narrowest phones, which doubled the bar height. */
+  [data-mobilebar] a { font-size: 15px !important; padding: 14px 6px !important; white-space: nowrap; }
+  /* The two pills stay on one row at every phone width - they must never
+     stack. flex:0 1 auto undoes the flex:none set in the 900px block so they
+     can give way instead of wrapping. */
+  [data-pillrow] { gap: 8px !important; flex-wrap: nowrap !important; }
+  [data-pillrow] > a {
+    flex: 0 1 auto !important;
+    min-width: 0;
+    white-space: nowrap;
+    padding: 8px 14px !important;
+    font-size: 13.5px !important;
+    gap: 6px !important;
+  }
+}
+
+/* Narrow phones: at 13.5px the pills needed ~71px more than the row had, so
+   they wrapped. Tighter type, padding, icon and row gutters buy that back.
+   Must come after the 560px block - both use !important, so source order
+   decides which wins. */
+@media (max-width: 400px) {
+  [data-pillrow] { gap: 6px !important; padding-left: 10px !important; padding-right: 10px !important; }
+  [data-pillrow] > a { padding: 8px 10px !important; font-size: 12px !important; gap: 5px !important; }
+  [data-pillrow] > a svg { width: 13px !important; height: 13px !important; }
+  [data-mobilebar] a { font-size: 12.5px !important; padding: 14px 4px !important; letter-spacing: .03em !important; }
+}
+
+/* Narrowest phones: the delivery CTA still broke to three lines at 13px, so
+   trim the type and side padding again to hold it at two. */
+@media (max-width: 380px) {
+  [data-ctaband] a { padding: 9px 12px !important; font-size: 12px !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -298,7 +382,6 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 @media print {
   [data-mobilebar], [data-side] { display: none; }
 }
-
 
 /* ---------------------------------------------------------------
    Hover / focus states.
@@ -330,13 +413,11 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 
 .fc-1:focus { background:#E7F3FE !important; }
 
-
 /* Services page CTA pattern. Primary is an orange fill, secondary a white
    outline; both invert to the deep ground on hover. Hand-written rather than
    generated, so they are not overwritten if the state block is regenerated. */
 .hv-svc-primary:hover { background:#0A3269 !important; color:#F9C21C !important; border-color:#0A3269 !important; }
 .hv-svc-secondary:hover { background:#0A3269 !important; color:#fff !important; border-color:#0A3269 !important; }
-
 
 /* Header delivery CTA band. Named rather than generated (hv-N) so a future
    regeneration of the state block cannot clobber it. */
