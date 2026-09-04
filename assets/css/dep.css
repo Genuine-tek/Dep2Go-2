@@ -35,6 +35,16 @@
   font-display: swap;
 }
 
+/* Header video: blank white until the file can actually paint, so no empty
+   frame flashes on load. dep.js flips data-ready once the video has data;
+   the border is reserved (transparent) from the start so nothing shifts. */
+[data-headervideo] video { opacity: 0; transition: opacity .3s ease; }
+[data-headervideo][data-ready="true"] { border-color: #BFD5EC !important; }
+[data-headervideo][data-ready="true"] video { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  [data-headervideo] video { transition: none; }
+}
+
 /* Photographs carry a blue wash so they sit inside the flat colour-blocked
    palette rather than reading as a separate warm layer. Enough to unify the
    page, not so much that the machinery stops looking like machinery. */
@@ -210,7 +220,7 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
   [data-headervideo] {
     grid-area: video;
     width: 100%;
-    height: clamp(88px, 17.6vw, 176px) !important;
+    height: clamp(95.63px, 19.13vw, 191.27px) !important;
   }
 }
 
@@ -219,6 +229,55 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
    rules (and a quarter of a phone screen is narrower than the phone button). */
 @media (min-width: 901px) {
   [data-tagline] { flex: 0 0 25%; max-width: 25%; }
+}
+
+/* Desktop: hold the CTA off the edges of the menu bar so it reads as a button
+   sitting on the bar rather than a coloured segment of it. */
+@media (min-width: 901px) {
+  /* Vertical only in the narrow desktop band: below ~1024px the nav links and
+     the button together leave no room for side margins, and the button wraps
+     to a second row. */
+  [data-deliverycta] { margin: 25px 0; }
+}
+/* 901-1023px: the six nav links plus a 306px button overrun the row and the
+   button drops to a second line. Tighten the link spacing so they share one. */
+@media (min-width: 901px) and (max-width: 1023px) {
+  [data-navlist] { gap: 13px !important; }
+  [data-deliverycta] { font-size: 14px !important; padding: 9px 15px !important; }
+}
+
+@media (min-width: 1024px) {
+  [data-deliverycta] { margin: 25px; }
+}
+
+/* The pinned header carries its own copy of the action pills. dep.js reveals
+   it only once the page's own pill row has scrolled up behind the nav, so the
+   two buttons are never on screen twice. */
+[data-stickypills] {
+  display: none;
+  /* Hangs off the bottom of the band rather than sitting inside its box.
+     If it added to the band's height, showing it would fire the band's
+     ResizeObserver, which re-measures and re-pins - and the resulting shift
+     moves the first pill row back into range, so the two flip-flop. */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+[data-stickypills][data-show="true"] { display: block; }
+
+/* Delivery CTA. On desktop it lives at the right-hand end of the menu bar -
+   the nav row is space-between, so the links sit left and this sits right.
+   At 900px and below the nav collapses to the Menu button, and the CTA takes
+   a full-width line of its own directly beneath it (order 4 keeps it below
+   the disclosure list when that is open). */
+@media (max-width: 900px) {
+  [data-navrow] { padding-bottom: 12px !important; }
+  [data-deliverycta] {
+    order: 4;
+    flex: 0 0 100%;
+    width: 100%;
+  }
 }
 
 /* The action pills (Request a Part + phone) stay centred at every width and in
@@ -309,17 +368,18 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
   [data-idbar] img { height: 50px !important; }
   /* Phone only: 5% off the video row. Tablet (721-900px) keeps the taller
      clamp set in the max-width:900px block above. */
-  [data-headervideo] { height: clamp(83.6px, 16.72vw, 167.2px) !important; }
+  [data-headervideo] { height: clamp(90.87px, 18.17vw, 181.75px) !important; }
+  /* Phone: tighten the framing a little. object-fit already covers the slot,
+     so this scales the painted frame inside it; the slot clips the overflow. */
+  [data-headervideo] video { transform: scale(1.066); }
 
-  /* Phone: the delivery CTA ran to three lines at 19px. Scaled about a third
-     down so it sets in two. */
-  [data-ctaband] > div { padding: 10px 16px !important; }
-  [data-ctaband] a {
-    padding: 9px 22px !important;
+  /* Phone: scale the delivery CTA down to match the tighter bar. */
+  [data-deliverycta] {
+    padding: 9px 16px !important;
     font-size: 13px !important;
     gap: 7px !important;
   }
-  [data-ctaband] a svg { width: 14px !important; height: 14px !important; }
+  [data-deliverycta] svg { width: 14px !important; height: 14px !important; }
   [data-tagline] { min-width: 0; text-align: right !important; }
   [data-tagline] > span { font-size: 13px !important; }
   [data-tagline] a {
@@ -367,7 +427,7 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 /* Narrowest phones: the delivery CTA still broke to three lines at 13px, so
    trim the type and side padding again to hold it at two. */
 @media (max-width: 380px) {
-  [data-ctaband] a { padding: 9px 12px !important; font-size: 12px !important; }
+  [data-deliverycta] { padding: 9px 12px !important; font-size: 12px !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -398,9 +458,10 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 .hv-4:hover { color:#3AA5F2 !important; }
 .hv-5:hover { background:#5FB3F5 !important; border-color:#5FB3F5 !important; }
 .hv-6:hover { background:#0A3269 !important; }
-.hv-7:hover { background:#0A3269 !important; color:#F9C21C !important; }
-.hv-8:hover { background:#fff !important; border-color:#fff !important; }
-.hv-9:hover { background:#fff !important; }
+/* Every gold button inverts on hover: navy ground, gold label. */
+.hv-7:hover { background:#0A3269 !important; color:#F9C21C !important; border-color:#0A3269 !important; }
+.hv-8:hover { background:#0A3269 !important; color:#F9C21C !important; border-color:#0A3269 !important; }
+.hv-9:hover { background:#0A3269 !important; color:#F9C21C !important; border-color:#0A3269 !important; }
 .hv-10:hover { color:#0A3269 !important; }
 .hv-11:hover { background:#0A3269 !important; color:#F9C21C !important; border-color:#0A3269 !important; }
 .hv-12:hover { background:#EAF2FB !important; border-left-color:#3AA5F2 !important; color:#0F62B5 !important; }
@@ -421,6 +482,10 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 
 /* Header delivery CTA band. Named rather than generated (hv-N) so a future
    regeneration of the state block cannot clobber it. */
+/* Gold buttons that lighten on hover instead of inverting to navy - the same
+   colour the delivery CTA uses, without its lift. */
+.hv-gold-soft:hover { background: #FFD451 !important; }
+
 .hv-delivery-cta:hover {
   background: #FFD451 !important;
   transform: translateY(-2px);
