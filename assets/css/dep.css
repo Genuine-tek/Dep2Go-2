@@ -365,7 +365,11 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
     gap: 12px !important;
     padding: 12px 16px !important;
   }
-  [data-idbar] img { height: 50px !important; }
+  /* Fill the white space beside the tagline: grow the logo toward the height
+     of that block. Viewport-scaled rather than flat, because the tagline sits
+     in a 1fr track - every pixel the logo gains, it loses, and it still has to
+     fit the phone button on a 320px screen. */
+  [data-idbar] img { height: clamp(62.4px, 20.4vw, 81.6px) !important; }
   /* Phone only: 5% off the video row. Tablet (721-900px) keeps the taller
      clamp set in the max-width:900px block above. */
   [data-headervideo] { height: clamp(90.87px, 18.17vw, 181.75px) !important; }
@@ -426,8 +430,16 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 
 /* Narrowest phones: the delivery CTA still broke to three lines at 13px, so
    trim the type and side padding again to hold it at two. */
+
 @media (max-width: 380px) {
   [data-deliverycta] { padding: 9px 12px !important; font-size: 12px !important; }
+}
+
+/* Narrowest phones: a bigger logo steals width from the tagline track, the
+   headline takes an extra line and the gap it was meant to close gets wider.
+   Keep the original size here. */
+@media (max-width: 340px) {
+  [data-idbar] img { height: 50px !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
