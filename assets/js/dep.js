@@ -191,12 +191,39 @@
     window.addEventListener('resize', measure);
   }
 
+  /* ---------------------------------------------------------- mobile bar
+   * The fixed Call / Request bar stays out of the way until the visitor has
+   * committed to the page - it slides in once they are 3% through it, and
+   * back out if they scroll above that point again. CSS owns the animation;
+   * this only flips data-shown.
+   */
+  function initMobileBar() {
+    var bar = $('[data-mobilebar]');
+    if (!bar) return;
+
+    var shown = null;
+    function update() {
+      var doc = document.documentElement;
+      var range = doc.scrollHeight - window.innerHeight;
+      // A page too short to scroll has no 3% point; leave the bar hidden.
+      var next = range > 0 && window.pageYOffset >= range * 0.03;
+      if (next === shown) return;
+      shown = next;
+      bar.setAttribute('data-shown', next ? 'true' : 'false');
+    }
+
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+  }
+
   function init() {
     initHeader();
     initSidebar();
     initRequestForms();
     initApplyForm();
     initSubscribe();
+    initMobileBar();
   }
 
   if (document.readyState === 'loading') {
