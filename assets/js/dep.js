@@ -37,12 +37,19 @@
       band.style.boxShadow = '0 2px 10px rgba(8,36,58,.14)';
       spacer.style.height = bandH + 'px';
       pinned = true;
+      // Showing the sticky pills makes the band taller than it measured
+      // unpinned, so republish the height anchors depend on.
+      band.setAttribute('data-pinned', 'true');
+      document.documentElement.style.setProperty('--dep-band',
+        band.offsetHeight + 'px');
     }
     function unpin() {
       band.style.position = 'static';
       band.style.boxShadow = 'none';
       spacer.style.height = '0px';
       pinned = false;
+      band.removeAttribute('data-pinned');
+      document.documentElement.style.setProperty('--dep-band', bandH + 'px');
     }
     function onScroll() {
       if (trigger === null) return;
@@ -78,6 +85,47 @@
       });
     }
 
+  }
+
+  /* -------------------------------------------------------- sticky pills
+   * The pinned band carries a second copy of the action pills. Pinning alone
+   * is the wrong trigger: the band pins while the page's own pill row is
+   * still on screen, which shows the same two buttons twice.
+   *
+   * So it waits until that first row has travelled up behind the nav — its
+   * bottom edge level with the nav's — and only then swaps in. Revealing it
+   * makes the band taller, so --dep-band is republished too; anchor offsets
+   * and the sticky sidebar both read it.
+   */
+  function initStickyPills() {
+    var band = $('[data-band]');
+    var sticky = $('[data-stickypills]');
+    if (!band || !sticky) return;
+    var nav = band.querySelector('nav');
+    var pageRow = null;
+    $$('[data-pillrow]').forEach(function (row) {
+      if (!band.contains(row)) pageRow = row;
+    });
+    if (!nav || !pageRow) return;
+
+    var shown = null;
+    function update() {
+      var next = band.getAttribute('data-pinned') === 'true' &&
+        pageRow.getBoundingClientRect().bottom <= nav.offsetHeight;
+      if (next === shown) return;
+      shown = next;
+      sticky.setAttribute('data-show', next ? 'true' : 'false');
+      if (band.getAttribute('data-pinned') === 'true') {
+        // The row hangs outside the band's box, so add it in by hand.
+        document.documentElement.style.setProperty('--dep-band',
+          (band.offsetHeight + (next ? sticky.offsetHeight : 0)) + 'px');
+      }
+    }
+
+    update();
+    // after initHeader's own handler, so data-pinned is current when this runs
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
   }
 
   /* --------------------------------------------------------------- forms */
@@ -191,6 +239,28 @@
     window.addEventListener('resize', measure);
   }
 
+  /* -------------------------------------------------------- header video
+   * The slot starts as plain white space. Only once the video actually has
+   * frames to paint does data-ready go on, fading it in and bringing back the
+   * frame border — otherwise an empty bordered box flashes while the file
+   * downloads. If it never loads, the slot simply stays white.
+   */
+  function initHeaderVideo() {
+    var slot = $('[data-headervideo]');
+    if (!slot) return;
+    var video = slot.querySelector('video');
+    if (!video) return;
+
+    function ready() { slot.setAttribute('data-ready', 'true'); }
+
+    // HAVE_CURRENT_DATA or better means there is a frame to show.
+    if (video.readyState >= 2) ready();
+    else {
+      video.addEventListener('loadeddata', ready);
+      video.addEventListener('canplay', ready);
+    }
+  }
+
   /* ---------------------------------------------------------- mobile bar
    * The fixed Call / Request bar stays out of the way until the visitor has
    * committed to the page - it slides in once they are 3% through it, and
@@ -219,10 +289,12 @@
 
   function init() {
     initHeader();
+    initStickyPills();
     initSidebar();
     initRequestForms();
     initApplyForm();
     initSubscribe();
+    initHeaderVideo();
     initMobileBar();
   }
 
