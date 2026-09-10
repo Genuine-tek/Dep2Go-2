@@ -14,6 +14,16 @@
     "ticket": "DEP-24-0420",
     "sidebarForm": true
   },
+  "consulting.html": {
+    "active": "consulting",
+    "ticket": "DEP-24-0427",
+    "sidebarForm": true
+  },
+  "express-delivery.html": {
+    "active": "delivery",
+    "ticket": "DEP-24-0428",
+    "sidebarForm": true
+  },
   "blog.html": {
     "active": "blog",
     "ticket": "DEP-24-0421",
