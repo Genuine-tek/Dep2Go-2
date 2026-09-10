@@ -1,0 +1,64 @@
+# Direct Equipment Parts - https://dep2go.com/
+# Every crawler is welcome, search and AI assistants alike. Citation in an AI
+# answer requires the crawler to have been allowed in first, so nothing here
+# is blocked.
+
+User-agent: *
+Allow: /
+
+# --- AI answer engines -----------------------------------------------------
+# Named explicitly so a future blanket rule cannot shut them out by accident.
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# OpenAI / ChatGPT
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic / Claude
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# Google AI Overviews and Gemini
+User-agent: Google-Extended
+Allow: /
+
+# Microsoft Copilot and Bing
+User-agent: bingbot
+Allow: /
+
+User-agent: msnbot
+Allow: /
+
+# Apple Intelligence
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Common Crawl - the corpus a great many models are trained from
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://dep2go.com/sitemap.xml
