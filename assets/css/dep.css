@@ -151,6 +151,22 @@ a:hover { color: var(--dep-steel); }
   [data-main] p > a:hover, [data-side] p > a:hover { background-size: 100% 3px; }
 }
 h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
+/* Ticket form field labels (Name, Company, Email...). At the original 9.5px,
+   uppercase and widely tracked, they were easy to skim straight past - so the
+   form read as boxes with no questions. Bigger, heavier and in the deep blue
+   so the question is the first thing the eye lands on. Sizes and colours are
+   set inline on each label, hence !important; the weight is not, so it wins
+   on its own. The 700 cut is loaded from Google Fonts alongside 400/500/600.
+   The *required marker steps back down so it does not compete. */
+[data-request-form] label {
+  font-weight: 700;
+  font-size: 12px !important;
+  letter-spacing: .08em !important;
+  color: #0A3269 !important;
+  margin-bottom: 2px;
+}
+[data-request-form] label span { font-size: .82em; font-weight: 600; }
+
 input::placeholder, textarea::placeholder { color: #5D7085; opacity: 1; }
 p { text-wrap: pretty; }
 
@@ -224,6 +240,15 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
   }
 }
 
+/* One nav item runs to two lines, so let every link stretch to the row height
+   and centre its own label. Without this the shorter items sit at their own
+   height and their active underlines land at different heights. Desktop only:
+   below 901px the nav collapses to the stacked disclosure menu. */
+@media (min-width: 901px) {
+  [data-navlist] > li { display: flex; }
+  [data-navlist] > li > a { display: flex; align-items: center; justify-content: center; }
+}
+
 /* The tagline + phone box occupy a quarter of the id bar and sit hard right,
    so the logo keeps the rest. Desktop only: below 900px the bar has its own
    rules (and a quarter of a phone screen is narrower than the phone button). */
@@ -239,14 +264,26 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
      to a second row. */
   [data-deliverycta] { margin: 25px 0; }
 }
-/* 901-1023px: the six nav links plus a 306px button overrun the row and the
-   button drops to a second line. Tighten the link spacing so they share one. */
-@media (min-width: 901px) and (max-width: 1023px) {
-  [data-navlist] { gap: 13px !important; }
+/* Eight nav links, two of them running to two lines, plus the delivery button
+   is more than one row can hold until the container is nearly full width. The
+   links are pulled in and the button shrinks to buy back what is available;
+   between 901 and 1159px nothing fits either way, so the button simply takes
+   the second line. */
+@media (min-width: 901px) and (max-width: 1279px) {
   [data-deliverycta] { font-size: 14px !important; padding: 9px 15px !important; }
 }
+@media (min-width: 901px) and (max-width: 1159px) {
+  [data-navlist] { gap: 13px !important; }
+}
+@media (min-width: 1160px) and (max-width: 1279px) {
+  [data-navlist] { gap: 12px !important; }
+}
 
-@media (min-width: 1024px) {
+/* Full container width: room for the button at its normal size, back on the
+   right of the row with margins all round - but only if the links give up a
+   few pixels of spacing. At 26px they overrun 1280px by one. */
+@media (min-width: 1280px) {
+  [data-navlist] { gap: 16px !important; }
   [data-deliverycta] { margin: 25px; }
 }
 
@@ -325,7 +362,7 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
   [data-navtoggle] { display: inline-flex !important; }
   [data-navlist] { display: none !important; }
   [data-navlist][data-open="true"] { display: flex !important; flex-direction: column; gap: 0 !important; width: 100%; order: 3; border-top: 1px solid #17518F; }
-  [data-navlist][data-open="true"] > li > a { padding: 14px 2px !important; border-bottom: 1px solid #154C88 !important; border-left: 3px solid transparent; padding-left: 11px !important; }
+  [data-navlist][data-open="true"] > li > a { padding: 14px 2px !important; border-bottom: 1px solid #154C88 !important; border-left: 3px solid transparent; padding-left: 11px !important; text-align: left !important; justify-content: flex-start !important; }
   [data-navlist][data-open="true"] > li > a[aria-current="page"] { border-left-color: #3AA5F2; }
   [data-pillrow] > a { flex: none; }
   /* Stacked category lists: rules move from the side to the top. */
@@ -430,6 +467,17 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 
 /* Narrowest phones: the delivery CTA still broke to three lines at 13px, so
    trim the type and side padding again to hold it at two. */
+
+/* Narrow phones: "Guaranteed to Find a Fix" is the longest of the three hero
+   buttons and, set nowrap at 16px, it grew wider than its own card and pushed
+   the page sideways. Trim the type on the smallest screens. */
+@media (max-width: 400px) {
+  section[aria-label="Ways to reach us"] article > a {
+    font-size: 14px !important;
+    padding: 9px 12px !important;
+    letter-spacing: .03em !important;
+  }
+}
 
 @media (max-width: 380px) {
   [data-deliverycta] { padding: 9px 12px !important; font-size: 12px !important; }

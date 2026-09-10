@@ -29,6 +29,15 @@
 
     var trigger = null, bandH = 0, pinned = false;
 
+    // The sticky pill row is absolute at top:100%, so it sits outside the
+    // band's own box. Anything republishing --dep-band has to add it back or
+    // the row's height quietly goes missing and anchors land underneath it.
+    function stickyExtra() {
+      var sticky = $('[data-stickypills]');
+      return (sticky && sticky.getAttribute('data-show') === 'true')
+        ? sticky.offsetHeight : 0;
+    }
+
     function pin() {
       band.style.position = 'fixed';
       band.style.top = '0';
@@ -41,7 +50,7 @@
       // unpinned, so republish the height anchors depend on.
       band.setAttribute('data-pinned', 'true');
       document.documentElement.style.setProperty('--dep-band',
-        band.offsetHeight + 'px');
+        (band.offsetHeight + stickyExtra()) + 'px');
     }
     function unpin() {
       band.style.position = 'static';
@@ -239,6 +248,50 @@
     window.addEventListener('resize', measure);
   }
 
+  /* ------------------------------------------------------- number ticker
+   * Counts a figure up when it scrolls into view (the same idea as MagicUI's
+   * NumberTicker, without pulling in React). The finished number is already
+   * written in the HTML, so with JS off, reduced motion, or no
+   * IntersectionObserver the reader still just sees the value.
+   *
+   *   <span data-ticker="2000" data-prefix="$" data-suffix="+">$2,000+</span>
+   */
+  function initTickers() {
+    var els = $$('[data-ticker]');
+    if (!els.length) return;
+    var reduced = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced || !('IntersectionObserver' in window)) return;
+
+    function run(el) {
+      var to = parseFloat(el.getAttribute('data-ticker'));
+      if (isNaN(to)) return;
+      var prefix = el.getAttribute('data-prefix') || '';
+      var suffix = el.getAttribute('data-suffix') || '';
+      var DURATION = 1400;
+      var started = null;
+
+      function frame(now) {
+        if (started === null) started = now;
+        var p = Math.min(1, (now - started) / DURATION);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = prefix + Math.round(to * eased).toLocaleString('en-US') + suffix;
+        if (p < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        io.unobserve(entry.target);
+        run(entry.target);
+      });
+    }, { threshold: 0.5 });
+
+    els.forEach(function (el) { io.observe(el); });
+  }
+
   /* -------------------------------------------------------- header video
    * The slot starts as plain white space. Only once the video actually has
    * frames to paint does data-ready go on, fading it in and bringing back the
@@ -259,6 +312,29 @@
       video.addEventListener('loadeddata', ready);
       video.addEventListener('canplay', ready);
     }
+
+    // The file is large, so it waits its turn: the source is parked in
+    // data-src and only attached once the page has finished loading and the
+    // browser has a spare moment. Nothing above the fold depends on it.
+    var source = slot.querySelector('source[data-src]');
+    if (!source) return;
+
+    function attach() {
+      if (!source.getAttribute('data-src')) return;
+      source.setAttribute('src', source.getAttribute('data-src'));
+      source.removeAttribute('data-src');
+      video.load();
+      var p = video.play();
+      if (p && p.catch) p.catch(function () { /* autoplay refused; fine */ });
+    }
+
+    function schedule() {
+      if (window.requestIdleCallback) requestIdleCallback(attach, { timeout: 2500 });
+      else setTimeout(attach, 300);
+    }
+
+    if (document.readyState === 'complete') schedule();
+    else window.addEventListener('load', schedule);
   }
 
   /* ---------------------------------------------------------- mobile bar
@@ -287,6 +363,57 @@
     window.addEventListener('resize', update);
   }
 
+  /* -------------------------------------------------------- hash landing
+   * Arriving on contact.html#schedule-a-call, the browser scrolls before this
+   * file has run: scroll-margin-top still holds its fallback, and the sticky
+   * pill row has not appeared yet, so the section heading ends up behind the
+   * band. Once both have settled, line the target back up. Two passes,
+   * because the first scroll is what makes the pills appear.
+   */
+  function initHashLanding() {
+    var hash = window.location.hash;
+    if (!hash || hash.length < 2) return;
+    var target;
+    try { target = document.getElementById(decodeURIComponent(hash.slice(1))); }
+    catch (e) { return; }
+    if (!target) return;
+
+    function band() {
+      return parseInt(getComputedStyle(document.documentElement)
+        .getPropertyValue('--dep-band'), 10) || 0;
+    }
+
+    // Offsets, not a bounding rect: the reveal animation holds the section
+    // 14px lower than it lands, and a rect would take that in and scroll us
+    // 14px too far — straight back under the band.
+    function docTop(el) {
+      var y = 0;
+      for (var n = el; n; n = n.offsetParent) y += n.offsetTop;
+      return y;
+    }
+
+    // Re-align on every frame the band's height changes, for half a second.
+    // One pass is not enough: the scroll that align() performs is what makes
+    // the sticky pills appear, and that arrives on a later scroll event.
+    var frames = 0, last = -1, live = true;
+    function stop() { live = false; }
+    ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (ev) {
+      window.addEventListener(ev, stop, { passive: true, once: true });
+    });
+
+    function tick() {
+      if (!live) return;
+      var h = band();
+      if (h !== last) {
+        last = h;
+        window.scrollTo(0, Math.max(0, docTop(target) - h - 14));
+      }
+      if (++frames < 30) requestAnimationFrame(tick);
+      else stop();
+    }
+    requestAnimationFrame(tick);
+  }
+
   function init() {
     initHeader();
     initStickyPills();
@@ -295,7 +422,9 @@
     initApplyForm();
     initSubscribe();
     initHeaderVideo();
+    initTickers();
     initMobileBar();
+    initHashLanding();
   }
 
   if (document.readyState === 'loading') {
