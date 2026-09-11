@@ -180,6 +180,18 @@
         var email = String(data.get('email') || '').trim();
         if (!name) return fail(form, 'Add your name so we know who to call back.');
         if (!EMAIL.test(email)) return fail(form, 'Add a valid email address for the quote.');
+
+        // Anything else the form marks required has to be filled in too. The
+        // older forms carry no required attributes, so nothing changes for
+        // them; data-ask lets a field say what it wants in plain words.
+        var blank = $$('[required]', form).filter(function (el) {
+          return !String(el.value || '').trim();
+        })[0];
+        if (blank) {
+          return fail(form, blank.getAttribute('data-ask') ||
+            'Fill in every field marked required.');
+        }
+
         succeed(form);
       });
     });

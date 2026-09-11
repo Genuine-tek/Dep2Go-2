@@ -36,10 +36,10 @@
 }
 
 /* Header video: blank white until the file can actually paint, so no empty
-   frame flashes on load. dep.js flips data-ready once the video has data;
-   the border is reserved (transparent) from the start so nothing shifts. */
+   frame flashes on load. dep.js flips data-ready once the video has data.
+   The border in the markup stays transparent at every stage - it is there to
+   hold its 2px of space, not to be seen. */
 [data-headervideo] video { opacity: 0; transition: opacity .3s ease; }
-[data-headervideo][data-ready="true"] { border-color: #BFD5EC !important; }
 [data-headervideo][data-ready="true"] video { opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
   [data-headervideo] video { transition: none; }
@@ -247,6 +247,12 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 @media (min-width: 901px) {
   [data-navlist] > li { display: flex; }
   [data-navlist] > li > a { display: flex; align-items: center; justify-content: center; }
+
+  /* Fill the bar rather than bunching at the left: the list takes whatever
+     width the delivery button leaves, and shares it out between the links.
+     The gap values further down stay as the minimum spacing, so the links
+     never close up on each other when the row is tight. */
+  [data-navlist] { flex: 1 1 auto; justify-content: space-between; }
 }
 
 /* The tagline + phone box occupy a quarter of the id bar and sit hard right,
@@ -264,18 +270,17 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
      to a second row. */
   [data-deliverycta] { margin: 25px 0; }
 }
-/* Eight nav links, two of them running to two lines, plus the delivery button
-   is more than one row can hold until the container is nearly full width. The
-   links are pulled in and the button shrinks to buy back what is available;
-   between 901 and 1159px nothing fits either way, so the button simply takes
-   the second line. */
+/* Seven nav links, two of them running to two lines, plus the delivery button.
+   The button shrinks below 1280px and the gap values set the minimum spacing
+   the spread may close to. Under about 1060px the two cannot share a row at
+   any readable size, so the button takes the second line. */
 @media (min-width: 901px) and (max-width: 1279px) {
   [data-deliverycta] { font-size: 14px !important; padding: 9px 15px !important; }
 }
-@media (min-width: 901px) and (max-width: 1159px) {
+@media (min-width: 901px) and (max-width: 1059px) {
   [data-navlist] { gap: 13px !important; }
 }
-@media (min-width: 1160px) and (max-width: 1279px) {
+@media (min-width: 1060px) and (max-width: 1279px) {
   [data-navlist] { gap: 12px !important; }
 }
 
@@ -467,6 +472,21 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 
 /* Narrowest phones: the delivery CTA still broke to three lines at 13px, so
    trim the type and side padding again to hold it at two. */
+
+/* Hero card headings are broken to two lines by hand, so their type has to
+   answer to the width of the card, not the width of the window. A viewport
+   clamp cannot: the grid holds three columns down to about 880px, where the
+   cards are at their narrowest while 4vw is still near its ceiling, and
+   "Pickup & Delivery" spilled onto a third line. Sizing off the container
+   keeps the longest line inside its own card at every width, and keeps all
+   three headings the same size as each other. The viewport clamp in the
+   markup stays as the fallback where container queries are missing. */
+@supports (container-type: inline-size) {
+  section[aria-label="Ways to reach us"] article { container-type: inline-size; }
+  section[aria-label="Ways to reach us"] article > h2 {
+    font-size: clamp(22px, 10cqi, 37px) !important;
+  }
+}
 
 /* Narrow phones: "Guaranteed to Find a Fix" is the longest of the three hero
    buttons and, set nowrap at 16px, it grew wider than its own card and pushed
