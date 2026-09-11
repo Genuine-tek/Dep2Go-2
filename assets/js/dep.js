@@ -426,6 +426,150 @@
     requestAnimationFrame(tick);
   }
 
+  /* ------------------------------------------------------------- gallery
+   * A one-at-a-time slider that advances itself every three seconds, and a
+   * lightbox for looking properly. The two share an index: open the lightbox
+   * from slide 3 and it opens on slide 3, close it and the slider carries on
+   * from wherever the lightbox was left.
+   *
+   * Autoplay stops while the pointer is over the gallery, while focus is
+   * inside it, while the lightbox is open, and while the tab is in the
+   * background - nothing should be moving under a reader.
+   */
+  function initGalleries() {
+    var box = $('[data-lightbox]');
+
+    $$('[data-gallery]').forEach(function (root) {
+      var track = $('[data-track]', root);
+      if (!track) return;
+      var slides = $$('li', track);
+      if (slides.length < 2) return;
+      var dots = $$('[data-go]', root);
+      var DELAY = 3000;
+      var index = 0;
+      var timer = null;
+      var held = false;      // pointer or focus is holding it still
+
+      var reduced = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function show(i) {
+        index = (i + slides.length) % slides.length;
+        track.style.transform = 'translateX(' + (-index * 100) + '%)';
+        slides.forEach(function (li, n) {
+          li.setAttribute('aria-hidden', n === index ? 'false' : 'true');
+        });
+        dots.forEach(function (d, n) {
+          if (n === index) d.setAttribute('aria-current', 'true');
+          else d.removeAttribute('aria-current');
+        });
+      }
+
+      function stop() { if (timer) { clearInterval(timer); timer = null; } }
+      function start() {
+        stop();
+        if (reduced || held || (box && !box.hidden) || document.hidden) return;
+        timer = setInterval(function () { show(index + 1); }, DELAY);
+      }
+      function hold(on) { held = on; on ? stop() : start(); }
+
+      $('[data-prev]', root).addEventListener('click', function () {
+        show(index - 1); start();
+      });
+      $('[data-next]', root).addEventListener('click', function () {
+        show(index + 1); start();
+      });
+      dots.forEach(function (d) {
+        d.addEventListener('click', function () {
+          show(parseInt(d.getAttribute('data-go'), 10)); start();
+        });
+      });
+
+      root.addEventListener('mouseenter', function () { hold(true); });
+      root.addEventListener('mouseleave', function () { hold(false); });
+      root.addEventListener('focusin', function () { hold(true); });
+      root.addEventListener('focusout', function () {
+        if (!root.contains(document.activeElement)) hold(false);
+      });
+      document.addEventListener('visibilitychange', start);
+
+      // click a slide to open it large
+      if (box) {
+        slides.forEach(function (li, n) {
+          var img = li.querySelector('img');
+          if (!img) return;
+          img.addEventListener('click', function () { openBox(slides, n, show, start); });
+        });
+      }
+
+      show(0);
+      start();
+      root._galleryStart = start;
+    });
+
+    if (box) wireBox(box);
+  }
+
+  /* The lightbox is a single element shared by every gallery on the page. It
+   * borrows the slide list it was opened from, so prev / next inside it walk
+   * the same images. */
+  var boxState = { slides: null, index: 0, sync: null, resume: null };
+
+  function openBox(slides, index, sync, resume) {
+    var box = $('[data-lightbox]');
+    if (!box) return;
+    boxState.slides = slides;
+    boxState.sync = sync;
+    boxState.resume = resume;
+    boxState.lastFocus = document.activeElement;
+    paint(index);
+    box.hidden = false;
+    document.documentElement.style.overflow = 'hidden';
+    var close = $('[data-lb-close]', box);
+    if (close) close.focus();
+  }
+
+  function paint(i) {
+    var box = $('[data-lightbox]');
+    var slides = boxState.slides;
+    if (!box || !slides) return;
+    boxState.index = (i + slides.length) % slides.length;
+    var src = slides[boxState.index].querySelector('img');
+    var img = $('[data-lb-img]', box);
+    var cap = $('[data-lb-caption]', box);
+    img.src = src.getAttribute('src');
+    img.alt = src.getAttribute('alt') || '';
+    if (cap) {
+      cap.textContent = (boxState.index + 1) + ' of ' + slides.length +
+        (src.getAttribute('alt') ? ' \u00b7 ' + src.getAttribute('alt') : '');
+    }
+  }
+
+  function closeBox() {
+    var box = $('[data-lightbox]');
+    if (!box || box.hidden) return;
+    box.hidden = true;
+    document.documentElement.style.overflow = '';
+    // put the slider back where the lightbox was left, then let it run on
+    if (boxState.sync) boxState.sync(boxState.index);
+    if (boxState.resume) boxState.resume();
+    if (boxState.lastFocus && boxState.lastFocus.focus) boxState.lastFocus.focus();
+  }
+
+  function wireBox(box) {
+    $('[data-lb-close]', box).addEventListener('click', closeBox);
+    $('[data-lb-prev]', box).addEventListener('click', function () { paint(boxState.index - 1); });
+    $('[data-lb-next]', box).addEventListener('click', function () { paint(boxState.index + 1); });
+    // clicking the backdrop closes; clicking the picture does not
+    box.addEventListener('click', function (e) { if (e.target === box) closeBox(); });
+    document.addEventListener('keydown', function (e) {
+      if (box.hidden) return;
+      if (e.key === 'Escape') { closeBox(); }
+      else if (e.key === 'ArrowLeft') { paint(boxState.index - 1); }
+      else if (e.key === 'ArrowRight') { paint(boxState.index + 1); }
+    });
+  }
+
   function init() {
     initHeader();
     initStickyPills();
@@ -437,6 +581,7 @@
     initTickers();
     initMobileBar();
     initHashLanding();
+    initGalleries();
   }
 
   if (document.readyState === 'loading') {
