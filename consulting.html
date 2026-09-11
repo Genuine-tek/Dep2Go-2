@@ -30,7 +30,7 @@
 <link rel="stylesheet" href="assets/css/industry.css">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;display=swap">
-<link rel="stylesheet" href="assets/css/dep.css?v=66">
+<link rel="stylesheet" href="assets/css/dep.css?v=67">
 <!-- @schema -->
 <!-- Shared entity graph. Every page carries the same Organization and WebSite
      nodes under stable @id values, so the page level schema on each page
@@ -331,7 +331,8 @@
           </section>
 
           <!-- ── when to call us in ─────────────────────────────────── -->
-          <section data-reveal="" style="background:#EAF2FB;border-top:3px solid #0A3269;padding:clamp(16px,4vw,26px);margin-bottom:40px">
+          <div data-pairrow="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:20px;align-items:start;margin-bottom:40px">
+          <section data-reveal="" style="background:#EAF2FB;border-top:3px solid #0A3269;padding:clamp(16px,4vw,26px)">
             <h2 style="font-size:clamp(22px,3vw,29px);text-transform:uppercase;color:#0A3269;margin:0 0 18px">This Helps When:</h2>
             <div style="display:flex;gap:16px;align-items:baseline;margin-bottom:18px;flex-wrap:wrap">
               <p style="flex:none;margin:0;font-family:var(--font-body);font-weight:600;font-size:30px;line-height:1;letter-spacing:.04em;color:#0F62B5">1</p>
@@ -356,6 +357,35 @@
 
             <a href="contact.html#schedule-a-call" style="display:inline-block;margin:30px 0 8px;background:#0F62B5;color:#fff;text-decoration:none;padding:clamp(10px,2.3vw,12px) clamp(15px,3.8vw,26px);font-family:var(--font-heading);font-weight:600;font-size:clamp(14.5px,3.2vw,17px);letter-spacing:.08em;text-transform:uppercase" class="hv-17">Schedule a Consultation</a>
           </section>
+
+          <!-- ── spot the failure ──────────────────────────────────── -->
+          <section data-reveal="" data-gallery="" style="background:#EAF2FB;border-top:3px solid #0A3269;padding:clamp(16px,4vw,26px)">
+            <h2 style="font-size:clamp(22px,3vw,29px);text-transform:uppercase;color:#0A3269;margin:0 0 6px">Can You Find What’s Broken?</h2>
+            <p style="margin:0 0 16px;font-size:16px;line-height:1.5;color:#31435C">Have a look. If the answer is not obvious, that is exactly what we are for.</p>
+
+            <div class="stage">
+              <ul class="track" data-track="">
+                  <li><img src="assets/img/dep-broken-1.webp" alt="Mini excavator with its boom and arm collapsed to the ground, chained and blocked up in the yard while it waits on parts" loading="eager" fetchpriority="high" decoding="async" width="1000" height="750"></li>
+                  <li><img src="assets/img/dep-broken-2.webp" alt="Mini excavator undercarriage and dozer blade caked in dirt, blade cylinder and rubber tracks in view" loading="lazy" decoding="async" width="1000" height="750"></li>
+                  <li><img src="assets/img/dep-broken-3.webp" alt="Two Baldwin BT9347-MPG hydraulic filters, one still sealed, on the step of a service truck" loading="lazy" decoding="async" width="1000" height="750"></li>
+                  <li><img src="assets/img/dep-broken-5.webp" alt="Digital caliper reading 69.19 millimetres across a bronze thrust washer, measured to pin down the exact replacement part" loading="lazy" decoding="async" width="1000" height="750"></li>
+              </ul>
+              <button type="button" class="nav prev" data-prev="" aria-label="Previous image">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+              </button>
+              <button type="button" class="nav next" data-next="" aria-label="Next image">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+              </button>
+            </div>
+
+            <div class="dots" data-dots="">
+              <button type="button" class="dot" data-go="0" aria-label="Show image 1 of 4" aria-current="true"></button>
+              <button type="button" class="dot" data-go="1" aria-label="Show image 2 of 4"></button>
+              <button type="button" class="dot" data-go="2" aria-label="Show image 3 of 4"></button>
+              <button type="button" class="dot" data-go="3" aria-label="Show image 4 of 4"></button>
+            </div>
+          </section>
+          </div>
 
           <!-- ── what to stock ───────────────────────────────────────── -->
           <section data-reveal="" style="margin-bottom:40px">
@@ -426,6 +456,23 @@
 
         </div>
       </div>
+    </div>
+    <!-- Lightbox for the gallery. Empty until a slide is clicked; dep.js
+         fills the figure and drives prev / next / close. -->
+    <div data-lightbox="" hidden role="dialog" aria-modal="true" aria-label="Image viewer">
+      <button type="button" class="lb-close" data-lb-close="" aria-label="Close viewer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
+      <button type="button" class="lb-nav lb-prev" data-lb-prev="" aria-label="Previous image">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+      </button>
+      <figure class="lb-figure">
+        <img data-lb-img="" alt="">
+        <figcaption data-lb-caption=""></figcaption>
+      </figure>
+      <button type="button" class="lb-nav lb-next" data-lb-next="" aria-label="Next image">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+      </button>
     </div>
   </main>
 
@@ -506,6 +553,6 @@
 </footer>
 <!-- /@footer -->
 </div>
-<script src="assets/js/dep.js?v=15"></script>
+<script src="assets/js/dep.js?v=16"></script>
 </body>
 </html>
