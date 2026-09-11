@@ -1,0 +1,4 @@
+{
+  "_comment": "The origin this site is actually served from. Every absolute URL in the built pages (canonical, og:url, og:image, twitter:image, the JSON-LD @id values, robots.txt and sitemap.xml) is rewritten to this at build time. Set it to wherever the site really lives, then run build.py. When dep2go.com is pointed at this site, change it to https://dep2go.com and rebuild.",
+  "origin": "https://dep2-go.vercel.app"
+}

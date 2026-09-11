@@ -1,4 +1,4 @@
-# Direct Equipment Parts - https://dep2go.com/
+# Direct Equipment Parts - https://dep2-go.vercel.app/
 # Every crawler is welcome, search and AI assistants alike. Citation in an AI
 # answer requires the crawler to have been allowed in first, so nothing here
 # is blocked.
@@ -61,4 +61,4 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-Sitemap: https://dep2go.com/sitemap.xml
+Sitemap: https://dep2-go.vercel.app/sitemap.xml

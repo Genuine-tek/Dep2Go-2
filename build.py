@@ -25,6 +25,30 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 PARTIALS = ROOT / "partials"
 
+# The origin written into the source files. Every absolute URL in the sources
+# uses this; at build time it is rewritten to whatever partials/site.json says
+# the site is really served from. Old origins stay in the list so switching
+# back and forth keeps working - a page already built for one host still gets
+# normalised to the next.
+SOURCE_ORIGIN = "https://dep2go.com"
+KNOWN_ORIGINS = [SOURCE_ORIGIN, "https://dep2-go.vercel.app"]
+
+
+def site_origin() -> str:
+    """Where the built site will actually live."""
+    f = PARTIALS / "site.json"
+    if not f.exists():
+        return SOURCE_ORIGIN
+    return json.loads(f.read_text(encoding="utf-8"))["origin"].rstrip("/")
+
+
+def retarget(text: str, origin: str) -> str:
+    """Point every absolute URL at the serving origin."""
+    for known in KNOWN_ORIGINS:
+        if known != origin:
+            text = text.replace(known, origin)
+    return text
+
 
 def load(name: str) -> str:
     return (PARTIALS / f"{name}.html").read_text(encoding="utf-8").rstrip("\n")
@@ -64,6 +88,9 @@ def sidebar_for(src: str, ticket: str, show_form: bool) -> str:
 
 def main() -> int:
     pages = json.loads((PARTIALS / "pages.json").read_text(encoding="utf-8"))
+    origin = site_origin()
+    if origin not in KNOWN_ORIGINS:
+        KNOWN_ORIGINS.append(origin)
     header, footer, sidebar = load("header"), load("footer"), load("sidebar")
     pillrow, schema = load("pillrow"), load("schema")
 
@@ -81,12 +108,26 @@ def main() -> int:
         html = region(html, "pillrow2", pillrow)
         html = region(html, "schema", schema)
         html = region(html, "footer", footer)
+        html = retarget(html, origin)
         if html != before:
             path.write_text(html, encoding="utf-8")
             changed += 1
         print(f"  {name}")
 
+    # robots.txt and sitemap.xml carry absolute URLs too
+    for name in ("robots.txt", "sitemap.xml"):
+        f = ROOT / name
+        if not f.exists():
+            continue
+        text = f.read_text(encoding="utf-8")
+        out = retarget(text, origin)
+        if out != text:
+            f.write_text(out, encoding="utf-8")
+            print(f"  {name}")
+            changed += 1
+
     print(f"\n{len(pages)} pages processed, {changed} updated.")
+    print(f"serving origin: {origin}")
     return 0
 
 
