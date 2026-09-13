@@ -371,8 +371,10 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
   [data-navlist][data-open="true"] > li > a[aria-current="page"] { border-left-color: #3AA5F2; }
   [data-pillrow] > a { flex: none; }
   /* Stacked category lists: rules move from the side to the top. */
-  [data-cols3] { grid-template-columns: 1fr 1fr !important; gap: 0 24px !important; }
-  [data-cols3] > div { padding: 16px 0 !important; border-left: 0 !important; border-top: 1px solid #DAE6F5 !important; }
+  /* The make, type and component block is now a full width brand row above a
+     pair of icon lists, so the old three column rules no longer apply. The
+     brand tiles simply take fewer per row as the space narrows. */
+  [data-makerow] { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important; }
 }
 
 @media (max-width: 720px) {
@@ -396,7 +398,6 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
     min-width: 0 !important;
   }
   [data-hide-sm] { display: none !important; }
-  [data-cols3] { grid-template-columns: 1fr !important; }
   [data-fieldgrid] > div { border-right: 0 !important; }
 
   /* Phone header: the tagline and its phone button stay beside the logo rather
@@ -475,9 +476,14 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
    One slide at a time on a flex track. The stage holds a fixed 4:3 box so the
    row beside it does not jump as slides change, and dep.js only ever sets a
    translateX on the track. */
+/* The gallery is a column so the stage can take up whatever height the box
+   beside it forces on the row; the aspect ratio is its starting size, not a
+   ceiling, and object-fit keeps the picture filling it either way. */
+[data-gallery] { display: flex; flex-direction: column; }
 [data-gallery] .stage {
   position: relative;
   overflow: hidden;
+  flex: 1 1 auto;
   aspect-ratio: 4 / 3;
   background: #0A3269;
   border: 1px solid var(--dep-line);
@@ -660,6 +666,7 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
     transition-duration: 0.001ms !important;
   }
   [data-reveal] { opacity: 1 !important; transform: none !important; }
+  [data-reveal] div[style*="height:3px"][style*="#3AA5F2"] { transform: none !important; }
 }
 
 @media print {
@@ -695,7 +702,62 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 .hv-17:hover { background:#0F62B5 !important; color:#fff !important; }
 .hv-18:hover { border-color:#3AA5F2 !important; color:#3AA5F2 !important; }
 
+/* Form fields. Hover is gold, focus is blue, and hover comes first in the
+   file so the blue still wins when a field is both hovered and focused -
+   which is every field you are actually typing into. The
+   hover media query keeps it off touch screens, where a tap would otherwise
+   leave the tint stuck on the last field touched. Every field in every form
+   on the site carries fc-1, so this covers the part request, contact,
+   sidebar, delivery and job application forms alike. */
+@media (hover: hover) {
+  /* The same blue the field takes when it is focused, so pointing at a
+     field and being in it read as one state. */
+  .fc-1:hover { background:#E7F3FE !important; }
+}
+.fc-1 { transition: background .14s ease; }
 .fc-1:focus { background:#E7F3FE !important; }
+@media (prefers-reduced-motion: reduce) { .fc-1 { transition: none; } }
+
+/* Make, machine type and component tiles. The icon plate inverts on hover,
+   the same navy/gold flip every gold button on the site performs, so the
+   whole tile reads as one target rather than a link with a picture on it. */
+.hv-tile:hover { border-color: #0A3269 !important; background: #F7FBFF !important; }
+
+/* The photo thumbnails carry their own frame so a studio shot on white does
+   not bleed into the tile. On hover that frame takes the navy the tile border
+   takes, which is the job the icon plate used to do. */
+.tile-pic {
+  flex: none;
+  width: 78px;
+  height: 78px;
+  object-fit: cover;
+  border: 1px solid #DAE6F5;
+  background: #fff;
+  transition: border-color .16s ease;
+}
+.hv-tile:hover .tile-pic { border-color: #0A3269; }
+
+/* Brand tiles. The name sits under the logo, but it is also what shows if a
+   logo file is ever missing - so it starts at wordmark size and shrinks to a
+   caption only once dep.js confirms the artwork actually loaded. */
+.brand-name {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: clamp(15px, 1.7vw, 18px);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #0A3269;
+  line-height: 1.1;
+}
+.brand-tile[data-haslogo="true"] .brand-name {
+  font-size: 12px;
+  letter-spacing: .1em;
+  color: #46586F;
+}
+.brand-tile:hover .brand-name { color: #0A3269; }
+
+@media (prefers-reduced-motion: reduce) { .tile-pic { transition: none; } }
+
 
 /* Services page CTA pattern. Primary is an orange fill, secondary a white
    outline; both invert to the deep ground on hover. Hand-written rather than
@@ -713,4 +775,160 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
   background: #FFD451 !important;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(10, 50, 105, .35);
+}
+
+/* The three Our Services buttons sit left against the copy on desktop. Below
+   1000px the sidebar has stacked and the main column runs full width, so the
+   row is centred instead - including each wrapped line of it, which is what
+   makes the stacked phone layout look intentional rather than ragged. */
+@media (max-width: 1000px) {
+  [data-servicecta] { justify-content: center; }
+}
+
+/* ---- reveal, JS driven ------------------------------------------------
+   Only applies once dep.js has set the flag, which it does only where
+   animation-timeline is unsupported. No JS means nothing is ever hidden. */
+html[data-revealjs] [data-reveal] { opacity: 0; transform: translateY(14px); }
+html[data-revealjs] [data-reveal][data-revealed] {
+  opacity: 1;
+  transform: none;
+  transition: opacity .5s ease-out, transform .5s ease-out;
+}
+
+/* ---- the cyan rule under each section heading ------------------------
+   74px of a 3px bar drawing itself in. Almost no movement, but it is the
+   mark that repeats on nearly every section, so the page stops feeling
+   frozen. One version per reveal mechanism. */
+@keyframes dep-rule { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-reveal] div[style*="height:3px"][style*="#3AA5F2"] {
+      transform-origin: left center;
+      animation: dep-rule both cubic-bezier(.22,.61,.36,1);
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-revealjs] [data-reveal] div[style*="height:3px"][style*="#3AA5F2"] {
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  html[data-revealjs] [data-reveal][data-revealed] div[style*="height:3px"][style*="#3AA5F2"] {
+    transform: scaleX(1);
+    transition: transform .55s .1s cubic-bezier(.22,.61,.36,1);
+  }
+}
+
+/* ---- tile photographs ------------------------------------------------- */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .hv-tile:hover .tile-pic { transform: scale(1.04); }
+}
+.tile-pic { transition: border-color .16s ease, transform .28s cubic-bezier(.22,.61,.36,1); }
+
+/* ---- downtime calculator sliders --------------------------------------
+   A range input is an OS widget until every part of it is styled, and the
+   two engines expose different pseudo elements, so track and thumb are
+   written twice. WebKit has no ::-moz-range-progress, so the filled part of
+   the track is a gradient driven by --fill, which dep.js sets as the value
+   changes. The thumb is square to match the rest of the site.
+
+   These deliberately do not carry fc-1: that class force-paints a background
+   on hover and focus, which here would put a box behind the track. */
+[data-calc] input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 20px;
+  margin: 6px 0 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+[data-calc] input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  border: 0;
+  background: linear-gradient(to right,
+    #0F62B5 var(--fill, 0%), #DAE6F5 var(--fill, 0%));
+}
+[data-calc] input[type="range"]::-moz-range-track {
+  height: 4px;
+  border: 0;
+  background: #DAE6F5;
+}
+[data-calc] input[type="range"]::-moz-range-progress {
+  height: 4px;
+  background: #0F62B5;
+}
+[data-calc] input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 18px;
+  margin-top: -7px;
+  border: 0;
+  border-radius: 0;
+  background: #0F62B5;
+  transition: background .14s ease;
+}
+[data-calc] input[type="range"]::-moz-range-thumb {
+  width: 13px;
+  height: 18px;
+  border: 0;
+  border-radius: 0;
+  background: #0F62B5;
+  transition: background .14s ease;
+}
+@media (hover: hover) {
+  [data-calc] input[type="range"]:hover::-webkit-slider-thumb { background: #F9C21C; }
+  [data-calc] input[type="range"]:hover::-moz-range-thumb { background: #F9C21C; }
+}
+[data-calc] input[type="range"]:focus-visible::-webkit-slider-thumb { background: #0A3269; }
+[data-calc] input[type="range"]:focus-visible::-moz-range-thumb { background: #0A3269; }
+@media (prefers-reduced-motion: reduce) {
+  [data-calc] input[type="range"]::-webkit-slider-thumb { transition: none; }
+  [data-calc] input[type="range"]::-moz-range-thumb { transition: none; }
+}
+
+/* ---- cost breakdown disclosure ----------------------------------------
+   The five cost lines collapse; the total band underneath never does. The
+   default marker is removed in both engines and replaced by the chevron in
+   the markup, which flips when the panel is open. */
+[data-calcdetails] > summary { list-style: none; flex-wrap: wrap; }
+/* keeps the label and chevron to the right whether they share the
+   heading's line or wrap below it */
+[data-calcdetails] > summary > span { margin-left: auto; }
+@media (max-width: 560px) {
+  [data-calcdetails] > summary [data-calcmore],
+  [data-calcdetails] > summary [data-calcless] { font-size: 11.5px !important; }
+  /* !important because the label carries its size inline, as everything
+     in this design export does */
+  [data-calcdetails] > summary { padding-left: 14px; padding-right: 14px; }
+}
+[data-calcdetails] > summary::-webkit-details-marker { display: none; }
+[data-calcdetails] > summary::marker { content: ""; }
+[data-calcdetails] > summary [data-calcchevron] { transition: transform .2s ease; }
+/* one label at a time, swapped off the open attribute. The hidden one is
+   display:none so it is out of the accessibility tree too. */
+[data-calcdetails] > summary [data-calcless] { display: none; }
+[data-calcdetails][open] > summary [data-calcmore] { display: none; }
+[data-calcdetails][open] > summary [data-calcless] { display: block; }
+[data-calcdetails][open] > summary [data-calcchevron] { transform: rotate(180deg); }
+@media (hover: hover) {
+  [data-calcdetails] > summary:hover { background: #0F62B5; }
+}
+[data-calcdetails] > summary:focus-visible { outline: 3px solid var(--dep-cyan); outline-offset: -3px; }
+@media (prefers-reduced-motion: reduce) {
+  [data-calcdetails] > summary [data-calcchevron] { transition: none; }
+}
+
+/* ---- Types of Consulting rows -----------------------------------------
+   Photo left, copy right. Under 620px the photo column would leave the text
+   a few words wide, so the row stacks with the photo on top. The grid columns
+   are set inline, hence !important. */
+@media (max-width: 620px) {
+  [data-consultrow] { grid-template-columns: minmax(0, 1fr) !important; }
 }

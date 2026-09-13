@@ -539,10 +539,9 @@
     var cap = $('[data-lb-caption]', box);
     img.src = src.getAttribute('src');
     img.alt = src.getAttribute('alt') || '';
-    if (cap) {
-      cap.textContent = (boxState.index + 1) + ' of ' + slides.length +
-        (src.getAttribute('alt') ? ' \u00b7 ' + src.getAttribute('alt') : '');
-    }
+    // the counter only. The alt text set above is what a screen reader
+    // announces; it describes the image, it is not a caption for the page.
+    if (cap) cap.textContent = (boxState.index + 1) + ' of ' + slides.length;
   }
 
   function closeBox() {
@@ -570,6 +569,180 @@
     });
   }
 
+  /* --------------------------------------------------------- brand logos
+   * Each brand tile ships with both a logo <img> and a typographic wordmark.
+   * The image is hidden until it is known to load, so a make with no artwork
+   * on disk shows its name rather than a broken image icon. Drop a file at
+   * assets/img/brand-<name>.png and it takes over on the next load.
+   */
+  function initBrandLogos() {
+    $$('[data-brandlogo]').forEach(function (img) {
+      var src = img.getAttribute('data-src');
+      if (!src) return;
+      var probe = new Image();
+      probe.onload = function () {
+        if (!probe.naturalWidth) return;
+        img.setAttribute('src', src);
+        img.hidden = false;
+        // the name stays on, under the logo; it only drops to caption size
+        // once we know there is artwork above it
+        img.parentNode.setAttribute('data-haslogo', 'true');
+      };
+      probe.src = src;
+    });
+  }
+
+  /* ------------------------------------------------------------- reveal
+   * dep.css reveals sections with animation-timeline: view(), which is
+   * Chromium only. Where that is missing this drives the same 14px lift off
+   * an observer, so Safari and Firefox get the motion too.
+   *
+   * The stylesheet keys the hidden state off data-revealjs on <html>, which
+   * only this function sets. So: no JS, nothing hidden; scroll-driven
+   * animations available, this bows out and the CSS version runs alone.
+   */
+  function initReveal() {
+    if (window.CSS && CSS.supports && CSS.supports('animation-timeline', 'view()')) return;
+    var els = $$('[data-reveal]');
+    if (!els.length) return;
+    var reduced = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced || !('IntersectionObserver' in window)) return;
+
+    document.documentElement.setAttribute('data-revealjs', 'true');
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.setAttribute('data-revealed', 'true');
+        io.unobserve(e.target);          // one way trip, it never re-hides
+      });
+    }, { threshold: 0.04, rootMargin: '0px 0px -10% 0px' });
+
+    els.forEach(function (el) { io.observe(el); });
+
+    // Anything already in view on load should not animate in behind the
+    // reader; mark it on the next frame so there is no first paint flash.
+    requestAnimationFrame(function () {
+      els.forEach(function (el) {
+        if (el.getBoundingClientRect().top < window.innerHeight) {
+          el.setAttribute('data-revealed', 'true');
+          io.unobserve(el);
+        }
+      });
+    });
+  }
+
+  /* ---------------------------------------------------------- calculator
+   * Emergency breakdown cost. Eight inputs, five cost lines, a total, and
+   * what one more day or hour of waiting adds.
+   *
+   * The premium multiplier applies to parts, labor and transportation only.
+   * Downtime and lost production are what they are; an emergency does not
+   * make a day of lost production cost more.
+   *
+   * The per day and per hour figures are the whole breakdown divided by the
+   * days it covers, so every slider feeds them - the premium included.
+   */
+  function initCalculator() {
+    var root = $('[data-calc]');
+    var out = $('[data-calcout]');
+    if (!root || !out) return;
+
+    function num(sel) {
+      var el = $(sel, root);
+      if (!el) return 0;
+      var v = parseFloat(el.value);
+      return (isNaN(v) || v < 0) ? 0 : v;      // blank or negative reads as 0
+    }
+
+    var money = (function () {
+      if (window.Intl && Intl.NumberFormat) {
+        var f = new Intl.NumberFormat('en-US', {
+          style: 'currency', currency: 'USD', maximumFractionDigits: 0
+        });
+        return function (n) { return f.format(Math.round(n)); };
+      }
+      return function (n) {
+        return '$' + Math.round(n).toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      };
+    })();
+
+    function put(sel, value) {
+      var el = $(sel, out);
+      if (el) el.textContent = money(value);
+    }
+
+    function recalculate() {
+      var days = num('[data-calc-days]');
+      var overhead = num('[data-calc-overhead]');
+      var rental = num('[data-calc-rental]');
+      var production = num('[data-calc-production]');
+      var premium = parseFloat(($('[data-calc-premium]', root) || {}).value) || 1;
+
+      var downtime = (overhead + rental) * days;
+      var lostProd = production * days;
+      var parts = num('[data-calc-parts]') * premium;
+      var labor = num('[data-calc-labor]') * premium;
+      var transport = num('[data-calc-transport]') * premium;
+
+      var total = downtime + lostProd + parts + labor + transport;
+      // the whole breakdown spread over the days it covers. Guarded:
+      // the slider floors at 1, but a 0 here would print Infinity.
+      var perDay = days > 0 ? total / days : 0;
+
+      put('[data-calc-downtime]', downtime);
+      put('[data-calc-lostprod]', lostProd);
+      put('[data-calc-outparts]', parts);
+      put('[data-calc-outlabor]', labor);
+      put('[data-calc-outtransport]', transport);
+      // the one figure shown as a negative: it is what the breakdown
+      // takes off you, not a price you are being quoted
+      var totalEl = $('[data-calc-total]', out);
+      if (totalEl) totalEl.textContent = '-' + money(total);
+      put('[data-calc-perday]', perDay);
+      put('[data-calc-perhour]', perDay / 24);
+    }
+
+    /* Each slider shows its own value, and paints how far along it is.
+     * --fill is what the track gradient reads; Firefox has a native
+     * ::-moz-range-progress and ignores it. */
+    function paint(el) {
+      var lo = parseFloat(el.min) || 0;
+      var hi = parseFloat(el.max);
+      var v = parseFloat(el.value);
+      if (!isNaN(hi) && hi > lo) {
+        el.style.setProperty('--fill', ((v - lo) / (hi - lo) * 100) + '%');
+      }
+      var key = null;
+      for (var i = 0; i < el.attributes.length; i++) {
+        var n = el.attributes[i].name;
+        if (n.indexOf('data-calc-') === 0) { key = n.slice(10); break; }
+      }
+      if (!key) return;
+      var echo = $('[data-calc-echo="' + key + '"]', root);
+      if (!echo) return;
+      if (key === 'days') {
+        echo.textContent = v + (v === 1 ? ' day' : ' days');
+      } else if (key === 'premium') {
+        echo.textContent = v + 'x';
+      } else {
+        echo.textContent = money(v);
+      }
+    }
+
+    var sliders = $$('input[type="range"]', root);
+    sliders.forEach(function (el) {
+      function onChange() { paint(el); recalculate(); }
+      el.addEventListener('input', onChange);
+      el.addEventListener('change', onChange);
+      paint(el);
+    });
+
+    recalculate();
+  }
+
   function init() {
     initHeader();
     initStickyPills();
@@ -581,7 +754,10 @@
     initTickers();
     initMobileBar();
     initHashLanding();
+    initBrandLogos();
     initGalleries();
+    initReveal();
+    initCalculator();
   }
 
   if (document.readyState === 'loading') {
