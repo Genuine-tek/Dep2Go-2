@@ -688,12 +688,19 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 .hv-4:hover { color:#3AA5F2 !important; }
 .hv-5:hover { background:#5FB3F5 !important; border-color:#5FB3F5 !important; }
 .hv-6:hover { background:#0A3269 !important; }
-/* Every gold button inverts on hover: navy ground, gold label. */
-.hv-7:hover { background:#0A3269 !important; color:#F9C21C !important; border-color:#0A3269 !important; }
-.hv-8:hover { background:#0A3269 !important; color:#F9C21C !important; border-color:#0A3269 !important; }
-.hv-9:hover { background:#0A3269 !important; color:#F9C21C !important; border-color:#0A3269 !important; }
+/* Every gold-filled button, one hover: navy ground, gold label, 2px gold edge.
+   The edge is an inset shadow, not a border - these buttons carry 0px, 1px and
+   2px borders between them, so recolouring the border would give an uneven
+   edge and adding one would shift the layout. It is not an outline either,
+   because :focus-visible uses outline and this would outrank it. */
+.hv-7:hover, .hv-8:hover, .hv-9:hover, .hv-11:hover,
+.hv-19:hover, .hv-gold-soft:hover, .hv-svc-primary:hover, .hv-delivery-cta:hover {
+  background: #0A3269 !important;
+  color: #F9C21C !important;
+  border-color: #0A3269 !important;
+  box-shadow: inset 0 0 0 2px #F9C21C !important;
+}
 .hv-10:hover { color:#0A3269 !important; }
-.hv-11:hover { background:#0A3269 !important; color:#F9C21C !important; border-color:#0A3269 !important; }
 .hv-12:hover { background:#EAF2FB !important; border-left-color:#3AA5F2 !important; color:#0F62B5 !important; }
 .hv-13:hover { transform:translateY(-4px) !important; box-shadow:0 12px 32px rgba(10,50,105,.28) !important; }
 .hv-14:hover { border-color:#3AA5F2 !important; }
@@ -762,19 +769,17 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 /* Services page CTA pattern. Primary is an orange fill, secondary a white
    outline; both invert to the deep ground on hover. Hand-written rather than
    generated, so they are not overwritten if the state block is regenerated. */
-.hv-svc-primary:hover { background:#0A3269 !important; color:#F9C21C !important; border-color:#0A3269 !important; }
 .hv-svc-secondary:hover { background:#0A3269 !important; color:#fff !important; border-color:#0A3269 !important; }
 
 /* Header delivery CTA band. Named rather than generated (hv-N) so a future
    regeneration of the state block cannot clobber it. */
-/* Gold buttons that lighten on hover instead of inverting to navy - the same
-   colour the delivery CTA uses, without its lift. */
-.hv-gold-soft:hover { background: #FFD451 !important; }
-
+/* The delivery CTA keeps its lift on top of the shared gold hover above.
+   The inset edge is repeated here because the drop shadow shares the
+   property - dropping it would lose the outline on this one button. */
 .hv-delivery-cta:hover {
-  background: #FFD451 !important;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(10, 50, 105, .35);
+  box-shadow: inset 0 0 0 2px #F9C21C,
+              0 6px 16px rgba(10, 50, 105, .35) !important;
 }
 
 /* The three Our Services buttons sit left against the copy on desktop. Below
