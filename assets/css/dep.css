@@ -392,11 +392,18 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
      positioned, so the aspect-ratio box carries no intrinsic width — and
      collapse to just its borders. An explicit percentage is definite up front,
      so the 16/10 box can resolve a real height from it. */
-  [data-stack-sm] > figure {
+  [data-stack-sm] > figure,
+  [data-stack-sm] > .blogslider {
     flex: 0 0 auto !important;
     width: 100% !important;
     min-width: 0 !important;
   }
+
+  /* Stacked, the reasons to call DEP should land before the reading material,
+     so the slider drops below them. Only the slider is ordered - its sibling
+     keeps the default 0 - and only here, so the desktop row still opens with
+     the slider on the left. */
+  [data-stack-sm] > .blogslider { order: 1; }
   [data-hide-sm] { display: none !important; }
   [data-fieldgrid] > div { border-right: 0 !important; }
 
@@ -544,6 +551,34 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 @media (prefers-reduced-motion: reduce) {
   [data-gallery] .track { transition: none; }
 }
+
+/* Blog slider (home page, beside Why Work With DEP). Same component as the
+   photo galleries, but the slides are cards, so two things change: the stage
+   sizes to its tallest slide rather than holding 4:3, and the arrows move
+   into a bar under it - floated over a card they would sit on the summary. */
+[data-gallery].blogslider .stage {
+  aspect-ratio: auto;
+  background: #fff;
+  border: 0;
+  border-top: 1px solid var(--dep-line);
+  border-bottom: 1px solid var(--dep-line);
+}
+[data-gallery].blogslider .track > li { height: auto; display: flex; flex-direction: column; }
+[data-gallery].blogslider .track img { cursor: default; }
+[data-gallery].blogslider .sliderbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 12px;
+}
+[data-gallery].blogslider .nav {
+  position: static;
+  transform: none;
+  width: 34px;
+  height: 34px;
+}
+[data-gallery].blogslider .dots { margin-top: 0; }
 
 /* ----------------------------------------------------------------- lightbox
    Fixed over the page, image centred and never taller than the viewport.

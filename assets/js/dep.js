@@ -453,7 +453,8 @@
       var slides = $$('li', track);
       if (slides.length < 2) return;
       var dots = $$('[data-go]', root);
-      var DELAY = 3000;
+      // A gallery may name its own interval; the photo galleries do not.
+      var DELAY = parseInt(root.getAttribute('data-delay'), 10) || 3000;
       var index = 0;
       var timer = null;
       var held = false;      // pointer or focus is holding it still
