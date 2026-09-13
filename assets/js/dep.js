@@ -345,6 +345,14 @@
       else setTimeout(attach, 300);
     }
 
+    // Never fetch it for someone who asked for less motion or less data.
+    // The slot just stays white - the same thing it does when the file
+    // fails to load, and nothing above the fold depends on it.
+    var reduced = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var saveData = navigator.connection && navigator.connection.saveData;
+    if (reduced || saveData) return;
+
     if (document.readyState === 'complete') schedule();
     else window.addEventListener('load', schedule);
   }
