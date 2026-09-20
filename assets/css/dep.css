@@ -779,24 +779,25 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 }
 .hv-tile:hover .tile-pic { border-color: #0A3269; }
 
-/* Brand tiles. The name sits under the logo, but it is also what shows if a
-   logo file is ever missing - so it starts at wordmark size and shrinks to a
-   caption only once dep.js confirms the artwork actually loaded. */
+/* Brand tiles. There is no logo artwork any more - the name IS the tile, so
+   it is set large enough to read as a wordmark in its own right. */
 .brand-name {
   font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: clamp(15px, 1.7vw, 18px);
-  letter-spacing: .04em;
+  font-weight: 700;
+  font-size: clamp(20px, 2.8vw, 30px);
+  letter-spacing: .02em;
   text-transform: uppercase;
   color: #0A3269;
-  line-height: 1.1;
+  line-height: 1.05;
 }
-.brand-tile[data-haslogo="true"] .brand-name {
-  font-size: 12px;
-  letter-spacing: .1em;
-  color: #46586F;
+.brand-tile:hover .brand-name,
+.brand-tile:focus-visible .brand-name {
+  color: #0F62B5;
+  text-decoration: underline;
+  text-decoration-color: #3AA5F2;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
 }
-.brand-tile:hover .brand-name { color: #0A3269; }
 
 @media (prefers-reduced-motion: reduce) { .tile-pic { transition: none; } }
 
@@ -963,6 +964,29 @@ html[data-revealjs] [data-reveal][data-revealed] {
 [data-calcdetails] > summary:focus-visible { outline: 3px solid var(--dep-cyan); outline-offset: -3px; }
 @media (prefers-reduced-motion: reduce) {
   [data-calcdetails] > summary [data-calcchevron] { transition: none; }
+}
+
+/* ---- quick delivery form ----------------------------------------------
+   The collapsed form at the top of the delivery page. Same disclosure
+   mechanics as the calculator's cost breakdown: the native marker is removed
+   in both engines, one label shows at a time off the [open] attribute, and
+   the chevron turns. */
+[data-quickdetails] > summary { list-style: none; }
+[data-quickdetails] > summary::-webkit-details-marker { display: none; }
+[data-quickdetails] > summary::marker { content: ""; }
+[data-quickdetails] > summary [data-quickchevron] { transition: transform .2s ease; }
+[data-quickdetails] > summary [data-quickless] { display: none; }
+[data-quickdetails][open] > summary [data-quickmore] { display: none; }
+[data-quickdetails][open] > summary [data-quickless] { display: block; }
+[data-quickdetails][open] > summary [data-quickchevron] { transform: rotate(180deg); }
+/* a tint, not an inversion: the row is white with blue text now, so the
+   navy hover the calculator uses would hide its own label */
+@media (hover: hover) {
+  [data-quickdetails] > summary:hover { background: #D8E6F7; }
+}
+[data-quickdetails] > summary:focus-visible { outline: 3px solid var(--dep-cyan); outline-offset: -3px; }
+@media (prefers-reduced-motion: reduce) {
+  [data-quickdetails] > summary [data-quickchevron] { transition: none; }
 }
 
 /* ---- Types of Consulting rows -----------------------------------------

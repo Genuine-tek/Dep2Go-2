@@ -584,22 +584,6 @@
    * on disk shows its name rather than a broken image icon. Drop a file at
    * assets/img/brand-<name>.png and it takes over on the next load.
    */
-  function initBrandLogos() {
-    $$('[data-brandlogo]').forEach(function (img) {
-      var src = img.getAttribute('data-src');
-      if (!src) return;
-      var probe = new Image();
-      probe.onload = function () {
-        if (!probe.naturalWidth) return;
-        img.setAttribute('src', src);
-        img.hidden = false;
-        // the name stays on, under the logo; it only drops to caption size
-        // once we know there is artwork above it
-        img.parentNode.setAttribute('data-haslogo', 'true');
-      };
-      probe.src = src;
-    });
-  }
 
   /* ------------------------------------------------------------- reveal
    * dep.css reveals sections with animation-timeline: view(), which is
@@ -752,6 +736,59 @@
     recalculate();
   }
 
+  /* ---------------------------------------------------- quick delivery form
+   * The collapsed form at the top of the delivery page. Everything below Name
+   * and Email lives in a <details>, and three things open it.
+   */
+  function initQuickForm() {
+    var box = $('[data-quickform]');
+    if (!box) return;
+    var form = $('form', box);
+    var more = $('[data-quickdetails]', box);
+    if (!form || !more) return;
+
+    function open() { if (!more.open) more.open = true; }
+
+    // 1. clicking into either visible field. focusin, not click: it catches
+    //    tabbing in and autofill as well as a pointer.
+    $$('[data-quickfirst]', box).forEach(function (el) {
+      el.addEventListener('focusin', open);
+    });
+
+    // 2. the amber header button, which then puts the cursor where they
+    //    would have clicked anyway.
+    var opener = $('[data-quickopen]', box);
+    if (opener) {
+      function sync() {
+        opener.setAttribute('aria-expanded', more.open ? 'true' : 'false');
+      }
+      more.addEventListener('toggle', sync);
+      sync();
+
+      opener.addEventListener('click', function () {
+        // Open: drop it and put the cursor where they would have clicked.
+        // Closed again on a second press - and deliberately WITHOUT moving
+        // focus, because focusing a field would trip its own focusin handler
+        // and reopen the panel on the way down.
+        if (more.open) { more.open = false; return; }
+        open();
+        var first = $('[data-quickfirst]', box);
+        if (first) first.focus();
+      });
+    }
+
+    // 3. a submit that is going to be rejected. This runs on CAPTURE so it
+    //    lands before initRequestForms' own listener - otherwise the reader
+    //    gets "fill in every field marked required" while the fields in
+    //    question are still folded away out of sight.
+    form.addEventListener('submit', function () {
+      var blank = $$('[required]', form).filter(function (el) {
+        return !String(el.value || '').trim();
+      })[0];
+      if (blank && more.contains(blank)) open();
+    }, true);
+  }
+
   function init() {
     initHeader();
     initStickyPills();
@@ -763,10 +800,10 @@
     initTickers();
     initMobileBar();
     initHashLanding();
-    initBrandLogos();
     initGalleries();
     initReveal();
     initCalculator();
+    initQuickForm();
   }
 
   if (document.readyState === 'loading') {
