@@ -170,6 +170,104 @@
     panel.focus && panel.focus();
   }
 
+  /* ------------------------------------------------------------- webhook
+   * Every submission is posted here. This is the PRODUCTION url: n8n gives a
+   * workflow two paths on the same id, and /webhook/ listens whenever the
+   * workflow is active. The other one, /webhook-test/, only listens after
+   * someone presses "Execute workflow" on the canvas and takes a single call,
+   * so it is for debugging and 404s the rest of the time. Swap the path here.
+   *
+   * The workflow has to be ACTIVE for this to reach anything, and the Webhook
+   * node needs "Allowed Origins (CORS)" set - the site posts application/json,
+   * which is not a CORS simple request, so the browser sends an OPTIONS
+   * preflight first and a webhook that will not answer it never sees the POST.
+   */
+  var HOOK = 'https://genuinetech.app.n8n.cloud/webhook/eedc6827-cbb4-481b-8fad-14100d058967';
+
+  /* JSON, not FormData. A 28-field multipart POST to this endpoint arrived
+   * with 2 keys parsed; the same fields as application/json arrived complete.
+   *
+   * The cost is a CORS preflight - application/json is not on the simple
+   * request safelist, so the browser sends OPTIONS first and the webhook has
+   * to answer it. The n8n Webhook node does that through its "Allowed
+   * Origins (CORS)" option.
+   */
+  function collect(form) {
+    var out = {};
+    $$('input, select, textarea', form).forEach(function (el) {
+      if (!el.name || el.type === 'submit' || el.type === 'button') return;
+      if (el.type === 'checkbox' || el.type === 'radio') {
+        if (el.checked) out[el.name] = el.value;
+      } else if (el.type !== 'file') {
+        out[el.name] = el.value;
+      }
+    });
+    return out;
+  }
+
+  // A file cannot ride in JSON, so it goes as base64 with its name and type.
+  // Resolves with no file keys at all when nothing was attached.
+  function withFile(form, data) {
+    var input = $$('input[type="file"]', form).filter(function (el) {
+      return el.name && el.files && el.files.length;
+    })[0];
+    if (!input) return Promise.resolve(data);
+
+    var file = input.files[0];
+    return new Promise(function (resolve) {
+      var reader = new FileReader();
+      reader.onload = function () {
+        var res = String(reader.result || '');
+        data[input.name] = file.name;
+        data[input.name + '_type'] = file.type || 'application/octet-stream';
+        data[input.name + '_size'] = file.size;
+        data[input.name + '_base64'] = res.slice(res.indexOf(',') + 1);
+        resolve(data);
+      };
+      // A resume that will not read is not worth losing the lead over.
+      reader.onerror = function () { data[input.name] = file.name; resolve(data); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function postForm(form, kind) {
+    var data;
+    try { data = collect(form); } catch (e) { return Promise.resolve(false); }
+
+    data.form_type = kind;
+    data.page = location.pathname.replace(/^\//, '') || 'index.html';
+    data.page_title = document.title;
+    data.page_url = location.href;
+    data.submitted_at = new Date().toISOString();
+    var ticket = $('[data-ticket]');
+    if (ticket) data.ticket = (ticket.textContent || '').trim();
+
+    return withFile(form, data).then(function (payload) {
+      function send() {
+        return fetch(HOOK, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      }
+      // One retry: a webhook waking up is the common failure, and the visitor
+      // has already been told it went through.
+      return send()
+        .catch(function () { return send(); })
+        .then(function (r) {
+          if (!r || !r.ok) {
+            console.error('[dep] webhook rejected the submission', r && r.status);
+            return false;
+          }
+          return true;
+        })
+        .catch(function (err) {
+          console.error('[dep] webhook unreachable', err);
+          return false;
+        });
+    });
+  }
+
   function initRequestForms() {
     $$('[data-request-form]').forEach(function (form) {
       form.addEventListener('submit', function (e) {
@@ -192,6 +290,7 @@
             'Fill in every field marked required.');
         }
 
+        postForm(form, 'part-request');
         succeed(form);
       });
     });
@@ -202,8 +301,23 @@
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         clearError(form);
-        var email = String(new FormData(form).get('email') || '').trim();
+        var data = new FormData(form);
+        var name = String(data.get('name') || '').trim();
+        var email = String(data.get('email') || '').trim();
+        if (!name) return fail(form, 'Add your name so we know who is applying.');
         if (!EMAIL.test(email)) return fail(form, 'Add a valid email address so we can reply.');
+
+        // Phone and message are caught here. Same sweep the request forms use:
+        // data-ask carries the whole sentence, so a field says what it wants.
+        var blank = $$('[required]', form).filter(function (el) {
+          return !String(el.value || '').trim();
+        })[0];
+        if (blank) {
+          return fail(form, blank.getAttribute('data-ask') ||
+            'Fill in every field marked required.');
+        }
+
+        postForm(form, 'job-application');
         succeed(form);
       });
     });

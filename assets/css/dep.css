@@ -192,7 +192,7 @@ img, svg, table { max-width: 100%; }
 input, textarea, select, button { font-size: inherit; max-width: 100%; }
 
 /* Two-column shell: sidebar left on desktop, below the article on mobile. */
-[data-shell] { display: flex; align-items: flex-start; gap: 34px; }
+[data-shell] { display: flex; align-items: flex-start; gap: 37px; }
 [data-side] { flex: 0 0 23%; min-width: 258px; position: sticky; top: calc(var(--dep-band, 123px) + 14px); }
 [data-main] { flex: 1 1 0; min-width: 0; }
 
@@ -346,7 +346,7 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 
 /* Tablet & down: sidebar drops under the article. */
 @media (max-width: 1000px) {
-  [data-shell] { flex-direction: column; gap: 40px; }
+  [data-shell] { flex-direction: column; gap: 44px; }
   [data-side] { flex: 1 1 auto; width: 100%; min-width: 0; position: static; order: 2; }
   [data-main] { order: 1; width: 100%; }
   [data-wide-only] { display: none !important; }
@@ -447,8 +447,8 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 /* Phones: single-column everything, and the ticket forms keep 16px inputs so
    iOS does not zoom on focus. */
 @media (max-width: 560px) {
-  [data-shell] { gap: 30px; }
-  [data-side] aside { gap: 20px !important; }
+  [data-shell] { gap: 33px; }
+  [data-side] aside { gap: 22px !important; }
   input, textarea { font-size: 16px !important; }
   /* Both labels must hold one line - the phone number broke to two on the
      narrowest phones, which doubled the bar height. */
@@ -535,8 +535,8 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 [data-gallery] .dots {
   display: flex;
   justify-content: center;
-  gap: 8px;
-  margin-top: 12px;
+  gap: 9px;
+  margin-top: 13px;
 }
 [data-gallery] .dot {
   width: 10px;
@@ -569,8 +569,8 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
-  padding: 12px;
+  gap: 15px;
+  padding: 13px 12px;
 }
 [data-gallery].blogslider .nav {
   position: static;
@@ -724,12 +724,16 @@ input, textarea, select, button { font-size: inherit; max-width: 100%; }
 .hv-5:hover { background:#5FB3F5 !important; border-color:#5FB3F5 !important; }
 .hv-6:hover { background:#0A3269 !important; }
 /* Every gold-filled button, one hover: navy ground, gold label, 2px gold edge.
+   .hv-jump rides along: the services index pills are not gold-filled, but they
+   sit ON navy, so the fill reads as nothing and the gold ring and label are all
+   that appears - the same hover, arrived at from the other side.
    The edge is an inset shadow, not a border - these buttons carry 0px, 1px and
    2px borders between them, so recolouring the border would give an uneven
    edge and adding one would shift the layout. It is not an outline either,
    because :focus-visible uses outline and this would outrank it. */
 .hv-7:hover, .hv-8:hover, .hv-9:hover, .hv-11:hover,
-.hv-19:hover, .hv-gold-soft:hover, .hv-svc-primary:hover, .hv-delivery-cta:hover {
+.hv-19:hover, .hv-gold-soft:hover, .hv-svc-primary:hover, .hv-delivery-cta:hover,
+.hv-jump:hover {
   background: #0A3269 !important;
   color: #F9C21C !important;
   border-color: #0A3269 !important;
@@ -884,7 +888,7 @@ html[data-revealjs] [data-reveal][data-revealed] {
   display: block;
   width: 100%;
   height: 20px;
-  margin: 6px 0 0;
+  margin: 7px 0 0;
   padding: 0;
   background: transparent;
   cursor: pointer;
